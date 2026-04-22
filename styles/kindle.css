@@ -1,0 +1,42 @@
+body {
+  font-size: 1em;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3 {
+  font-weight: bold;
+  margin-top: 2em;
+  margin-bottom: 0.5em;
+  page-break-after: avoid;
+}
+
+h1 { font-size: 1.6em; }
+h2 { font-size: 1.3em; }
+h3 { font-size: 1.1em; }
+
+p {
+  margin: 0;
+  text-indent: 1.5em;
+}
+
+h1 + p, h2 + p, h3 + p {
+  text-indent: 0;
+}
+
+blockquote {
+  margin-left: 2em;
+  margin-right: 2em;
+  font-style: italic;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1em auto;
+}
+
+figure { margin: 1.5em 0; }
+figcaption { font-size: 0.85em; text-align: center; }

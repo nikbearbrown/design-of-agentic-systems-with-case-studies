@@ -1,0 +1,5 @@
+output/
+*.epub
+*.pdf
+*.docx
+.DS_Store
