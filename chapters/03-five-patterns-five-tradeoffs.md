@@ -1,8 +1,3 @@
-> **Voice status:** `voice-unanchored`. Root `style/` and `books/design-of-agentic-systems/style/` both empty as of this draft. Drafted as continuation of Chapters 1 and 2's voice; voice will be calibrated across all three chapters together.
->
-> **Scope note:** The book outline lists Ch. 4's five patterns as ReAct, Plan-and-Execute, ReWOO, Reflection, Tree-of-Thoughts. This chapter keeps ReAct, Plan-and-Execute, and Reflection but substitutes Multi-Agent Collaboration and Memory-Augmented Agents for ReWOO and Tree-of-Thoughts — creating topic overlap with Ch. 5 (memory) and Ch. 7 (multi-agent). Editor's call: the substitution trades two experimental patterns for two that carry the most load in production deployments, which is where the book's argument lands. I'm keeping the substitution and flagging the overlap here; Chs. 5 and 7 will extend rather than repeat.
-
----
 
 # Chapter 3 — Five Patterns, Five Trade-offs
 
@@ -10,15 +5,6 @@
 
 **Author:** Nik Bear Brown
 
----
-
-## Suggested titles
-
-1. **Five Patterns, Five Trade-offs: How the Architecture You Choose Determines What Breaks**
-2. **The Illusion of the Smart Agent: Five Constraints That Make Agents Reliable**
-3. **Constraints Are the Architecture: A Field Guide to Agentic Reasoning Patterns**
-
----
 
 ## TL;DR
 
