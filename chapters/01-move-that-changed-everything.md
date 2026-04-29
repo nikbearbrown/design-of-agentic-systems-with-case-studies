@@ -74,7 +74,13 @@ No. And the reason is the most useful thing you can take from this chapter, so I
 
 *Local explicability* is the ability to explain a single move in terms a human can follow once the move is in hand. *Global navigability* is the ability to find the move from scratch by thinking. These are different capacities, and most of what goes wrong in popular AI commentary comes from conflating them.
 
-<!-- → [TABLE: two-column contrast of local explicability vs. global navigability — rows covering: definition, what it requires from the human, what AlphaGo demonstrated on each axis, and the practical implication for oversight; student should see that these are orthogonal properties, not points on a single axis] -->
+| | **Local explicability** | **Global navigability** |
+|---|---|---|
+| **Definition** | The ability to explain a specific output in terms a human can follow, once that output is in hand | The ability to find the output from scratch, by reasoning forward from the starting position |
+| **What it requires from the human** | Access to the output plus enough domain knowledge to narrate a justification | The capacity to traverse the solution space independently — to reach the correct point without being handed it |
+| **What AlphaGo demonstrated** | Move 37 could be explained after the fact: given the next thirty stones and the eventual outcome, commentators could narrate why the shoulder hit worked | No human demonstrated the ability to find Move 37-class moves from scratch in 2016 conditions; the policy network assigned it roughly one-in-ten-thousand probability |
+| **Practical implication for oversight** | A locally explicable system can always produce a plausible story about its output — the story may be true at every step and still not reveal what drove the decision | If a system's outputs are globally non-navigable, slowing it down and reasoning yourself is not a viable audit strategy; the bottleneck is not time but geometry |
+| **The dangerous combination** | — | When local explicability is available *and looks correct*, but the global structure determined the output, oversight that reads only the explanation will systematically miss what actually happened |
 
 A human grandmaster can look at Move 37 and, given the game that followed, narrate a justification. The same grandmaster, facing the same board *before* Move 37 was played, would not have found it. The position in the solution space that made the move correct is locally explicable — you can describe one point in it once someone hands you that point — but not globally navigable: you cannot reach that point on your own from the points nearby.
 
