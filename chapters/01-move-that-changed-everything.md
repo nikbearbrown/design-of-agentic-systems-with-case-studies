@@ -28,6 +28,8 @@ In 1997, IBM's Deep Blue beat Garry Kasparov in chess. The architecture was unde
 
 This worked because chess is deep but narrow. From a typical position you have about thirty-five legal moves — what's called the *branching factor* — and the evaluation function, worked out by generations of grandmasters, is actually pretty good. Material advantage really is a decent proxy for winning. Deep Blue could search a few dozen ply ahead, score the leaves, and outplay any human alive.
 
+<!-- → [INFOGRAPHIC: side-by-side comparison of chess vs. Go on the two failure axes — branching factor (35 vs. 250) and evaluation function (writable vs. not writable); the visual should make the "two problems, not one" structure of the Go challenge immediately legible] -->
+
 Now look at Go. Go is played on a 19×19 board; each move places a stone on an empty intersection. Early in the game you have close to 361 legal moves — every intersection. Even later, the branching factor averages around 250.
 
 That alone is not the problem. The bigger problem is that nobody, in the history of the game, has ever written down a position-evaluation formula for Go that works. The heuristics live in the heads of strong players as something closer to perception than to calculation. Ask a professional why one position is better than another and you will get a mix of precise reasoning ("this group lacks eye-shape, so it can die under pressure") and something more like seeing ("this wall feels thin").
@@ -39,6 +41,8 @@ The design choice hidden in this problem is the move I want you to see clearly, 
 ## How AlphaGo actually reasoned
 
 AlphaGo is three things stacked together. A policy network, a value network, and Monte Carlo Tree Search. I want to walk through each, because the machinery matters for what comes next.
+
+<!-- → [DIAGRAM: three-component architecture of AlphaGo — policy network (input: board → output: move probabilities), value network (input: board → output: win probability 0–1), and MCTS (uses both to guide search); show data flow between the three, with a callout indicating that MCTS is what "ties them together" at decision time] -->
 
 The policy network is a neural network — that is, a function with millions of adjustable numbers inside, tuned by an optimization algorithm to reproduce examples it has been shown — that takes a Go board as input and outputs a probability for every legal move. *If I were going to play here, move A has a 23% chance of being the right move, move B has 18%, move C has 11%.* It does not score moves as good or bad. It only narrows the field.
 
@@ -70,6 +74,8 @@ No. And the reason is the most useful thing you can take from this chapter, so I
 
 *Local explicability* is the ability to explain a single move in terms a human can follow once the move is in hand. *Global navigability* is the ability to find the move from scratch by thinking. These are different capacities, and most of what goes wrong in popular AI commentary comes from conflating them.
 
+<!-- → [TABLE: two-column contrast of local explicability vs. global navigability — rows covering: definition, what it requires from the human, what AlphaGo demonstrated on each axis, and the practical implication for oversight; student should see that these are orthogonal properties, not points on a single axis] -->
+
 A human grandmaster can look at Move 37 and, given the game that followed, narrate a justification. The same grandmaster, facing the same board *before* Move 37 was played, would not have found it. The position in the solution space that made the move correct is locally explicable — you can describe one point in it once someone hands you that point — but not globally navigable: you cannot reach that point on your own from the points nearby.
 
 This will appear in every case of this kind. Every system of this character produces outputs that are locally explicable — someone can always tell you a story about why the system did what it did — while being globally non-navigable, meaning no amount of reading the story teaches you to produce the next such output yourself.
@@ -96,6 +102,8 @@ Go is, structurally, the *easiest* domain in which non-reconstructible correct r
 
 The objective was cheap to specify. *Win the game* is a function of board state at termination; you write it down in one line, and there is no ambiguity about whether it was achieved. The environment was sealed: a stone placed at D17 did not also change the weather, make someone lose their job, or commit a resource that could not be recovered. Moves were locally atomic — a Go stone interacts with its neighbors through rules the game makes explicit, with no hidden channels through which one stone affects another. Ground truth arrived: every game terminates within hours and you know who won. And self-play was free: AlphaGo's strength came from millions of games against copies of itself, with no patients harmed, no markets moved, no clients misrepresented.
 
+<!-- → [TABLE: the five safety properties of Go — rows: cheap objective specification, sealed environment, locally atomic actions, ground truth arrives, self-play is free; columns: the Go case (what made it true) and the agentic deployment case (what makes it false); student should see this as the structural argument for why Move 37 doesn't license confidence in harder domains] -->
+
 Cluster these and three families fall out. The objective: cheap to specify. The action footprint: bounded and declared. The feedback: arrives, cheaply, on a useful timescale. Every one of those families fails in the deployments I am going to walk through later. *Help the patient* is not a function you can write down. *Send the email* has consequences in systems the agent doesn't observe. *Was the legal strategy correct* is judged years downstream by communities the agent doesn't model.
 
 So this is the sentence I want to sit underneath everything in the rest of the book: *Move 37 is the existence proof that correct, consequential, non-reconstructible reasoning is possible in a domain where every safety property is intact. Agentic systems are where we test what happens when those properties come off.*
@@ -111,3 +119,51 @@ A computer placed a stone on the fifth line and a room full of grandmasters stop
 Take any of those properties away and ask yourself what you have left.
 
 That is the question this book is about.
+
+---
+
+## Exercises
+
+### Warm-up
+
+**1.** AlphaGo uses three components working together. In your own words, describe what each one does and why no single component could have solved Go alone. Which component fixed the evaluation problem, and which fixed the branching problem?
+*(Tests: understanding of the policy network / value network / MCTS architecture)*
+
+**2.** The chapter distinguishes *local explicability* from *global navigability*. Define both terms as precisely as you can without looking back at the text. Then give one example — from any domain, not Go — where a result could be locally explicable without being globally navigable.
+*(Tests: retention and transfer of the chapter's central conceptual distinction)*
+
+**3.** Name the five safety properties that made Go a domain where non-reconstructible reasoning was harmless. For each one, state in a single sentence why it held in Go.
+*(Tests: recall of the five-property framework)*
+
+---
+
+### Application
+
+**4.** Deep Blue's evaluation function was hand-written by grandmasters; AlphaGo's value network was learned from self-play. Explain the practical consequence of this difference for a domain like medical diagnosis — where the "evaluation function" would need to assess whether a treatment plan is likely to succeed. What does the Go lesson imply about what you can and cannot write down?
+*(Tests: applying the evaluation-function design choice to a novel domain)*
+
+**5.** Consider a chess engine evaluating a position at depth 30 (searching 30 moves ahead). Is the engine's output locally explicable? Is it globally navigable by a human grandmaster? Are these the same question? Defend your answers using the definitions from this chapter.
+*(Tests: applying local explicability / global navigability to a near-domain case with a non-obvious answer)*
+
+**6.** AlphaZero started with only the rules of Go and played itself from scratch, producing moves like Move 37 within three days — with zero exposure to human games. A common response to this fact is: "So it just found patterns humans hadn't noticed yet." Evaluate that claim. What would "finding a pattern" mean in this context, and does the explanation hold up?
+*(Tests: critical interrogation of a plausible but under-examined popular interpretation)*
+
+**7.** The chapter argues that Move 37 is not the existence proof for the book's central worry — only the motivating case. Reconstruct this argument in three to five sentences. What would the actual existence proof require that Move 37 cannot supply?
+*(Tests: comprehension of the chapter's self-critical move and its logical structure)*
+
+---
+
+### Synthesis
+
+**8.** The chapter presents a "strong version" and a "weak version" of the claim that AlphaGo's solution geometry is non-representable to humans — and admits it cannot yet tell them apart operationally. Explain why this distinction matters for the practical question of oversight. Would a different answer to the strong/weak question change anything about how a professional knowledge worker should approach AI outputs today?
+*(Tests: connecting the chapter's epistemic honesty to the book's practical concern; anticipates later chapters on the Loop)*
+
+**9.** The chapter ends by organizing the book around which of three families of safety properties fails first: the objective, the action footprint, or the feedback loop. Choose a real AI deployment you are familiar with — a coding assistant, a content moderation system, a loan-approval model — and identify which family fails most severely in that deployment. What are the oversight implications?
+*(Tests: applying the three-family framework to a real case; bridges to the book's agentic chapters)*
+
+---
+
+### Challenge
+
+**10.** The chapter defines "alien intelligence" strictly as a claim about the geometry of solution spaces and whether that geometry is humanly representable in the operational sense — explicitly not a claim about consciousness. Stress-test this definition. Construct a case where a system's output is globally navigable by humans and yet we might still want to call it "alien." Then construct a case where a system's output is globally non-navigable and yet we might not. Does the chapter's definition do the work the book needs it to do, or is it drawing the boundary in the wrong place?
+*(Tests: stress-testing the chapter's central definition against edge cases it does not address; requires the student to reason about the definition's purpose, not just its content)*
