@@ -128,6 +128,18 @@ That is the question this book is about.
 
 ---
 
+## A note about AI
+
+The chapter argues for a pivotal moment in agent design. The model can produce narrative arguments that read pivotally about almost any moment.
+
+Where the model genuinely helps: testing the chapter's thesis against alternate candidate moments. If the model can produce an equally compelling case for a different moment, the thesis needs sharpening.
+
+Where the model does damage: writing the narrative itself. A model-drafted narrative reads as plausible without being meant.
+
+The rule: the model is a narrative stress-tester, not a narrative author.
+
+---
+
 ## Exercises
 
 ### Warm-up
@@ -173,3 +185,25 @@ That is the question this book is about.
 
 **10.** The chapter defines "alien intelligence" strictly as a claim about the geometry of solution spaces and whether that geometry is humanly representable in the operational sense — explicitly not a claim about consciousness. Stress-test this definition. Construct a case where a system's output is globally navigable by humans and yet we might still want to call it "alien." Then construct a case where a system's output is globally non-navigable and yet we might not. Does the chapter's definition do the work the book needs it to do, or is it drawing the boundary in the wrong place?
 *(Tests: stress-testing the chapter's central definition against edge cases it does not address; requires the student to reason about the definition's purpose, not just its content)*
+
+
+---
+
+## AI Wayback Machine
+
+**Lee Sedol** was Korean Go champion whose 2016 defeat by AlphaGo and his famous "move 78" reply marked the moment AI became real for working practitioners.
+
+**Run this:**
+
+```
+Who is Lee Sedol, and how does their work connect to the pivotal moments in AI we covered in this chapter? Keep it to three paragraphs. End with the single most surprising thing about their career or ideas.
+```
+
+→ Search **"Lee Sedol"** on Wikipedia.
+
+**Now make the prompt better.** Try one of these:
+
+- Ask it to apply Lee Sedol's framework to a specific agent design problem you face.
+- Add a constraint: "Answer including criticisms or limits of Lee Sedol's framework."
+
+What changes? What gets better? What gets worse?

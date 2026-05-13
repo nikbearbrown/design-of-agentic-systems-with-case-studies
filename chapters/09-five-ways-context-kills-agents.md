@@ -2,7 +2,7 @@
 
 *Offloading, Isolation, Retrieval, Compaction, and Caching — architectural mitigations mapped to the failure modes they actually address*
 
-**Author:** Junyi Zhang
+**Authors:** Junyi Zhang, Mridula Mahendran
 **Editor:** Nik Bear Brown
 
 ---
@@ -117,6 +117,60 @@ Each approach handles its failures. Together they handle the whole surface. Remo
 
 This is what it means to say context management is an architectural discipline. It is not a single choice. It is a composed set of choices, each operating at a different layer, each matched to the failure it actually addresses.
 
+## A worked example — StudyAI
+
+Theory is cheaper to write than to honor. The two of us built a system, **StudyAI**, that needs four of the five approaches the chapter just named, and the design decisions are visible enough to walk through. The system takes a study source — pasted text, a PDF via PyMuPDF, or a YouTube transcript via `youtube-transcript-api` — generates spaced-repetition flashcards from it via LLaMA 3.3-70b on Groq, and then schedules reviews using two custom reinforcement-learning algorithms that learn from the user's per-card answers.
+
+The interesting context-management decisions are not in the LLM call. They are in everything around it.
+
+**Offloading — RL state lives outside the prompt, not inside it.** A naive build would shove every prior answer, every interval decision, every difficulty rating, into the prompt as conversational history so the model could "remember" what to do next. We don't. The Q-Learning agent owns a sparse Q-table — `{state: {card_id: q_value}}` — that lives in `st.session_state["agent"]`, indexed by a 3-tuple of (card_difficulty, user_accuracy_bucket, time_gap_bucket). The LinUCB bandit owns matrices `A_i` and vectors `b_i` for each of five action arms (1 minute, 10 minute, 1 hour, 1 day, 3 days). The flashcard list, the per-card due times, the per-card `times_shown`/`times_correct` counters — all session-state. The LLM is only invoked at three points: card generation, document Q&A, summary generation. None of those calls carries the full session state into the prompt. The model is asked specific questions whose answers depend on a small, scoped subset of state retrieved from the offloaded store. This is Offloading doing the work it is supposed to do — keeping the working memory window small while preserving every piece of state the agent will ever need to reason about.
+
+**Retrieval — chunked DocumentRAG, indexed once, queried selectively.** The Ask tab does not load the source material into the prompt. A typical user-uploaded paper might be 50,000 characters. Past around 8,000 characters of source material, naive prompting starts producing the failure modes the previous chapter named — Distraction, then Confusion as multiple sections of source compete for attention. Our DocumentRAG chunks the source into 500-character windows with 100-character overlap, embeds each chunk with `all-MiniLM-L6-v2`, and stores them in ChromaDB. At query time, the Ask tab retrieves the top-5 chunks and injects only those into the prompt. For a 12,000-character article that's roughly 30 chunks indexed, 5 retrieved per question — about 17% of the document, the part actually relevant to the question asked. The other 83% never enters the context. The model sees only what the question requires. The system prompt enforces what Retrieval-with-provenance is supposed to enforce: *answer only from the document content provided below; never use outside knowledge.*
+
+**Isolation — three prompts, three scopes, no spillover.** The card-generation prompt is one job: take this text, return a JSON array of flashcards with `question`, `answer`, `difficulty`. No conversational history. No prior cards. No retrieval. Just the source-text-to-cards transformation. The Ask prompt is a separate job: answer questions strictly from retrieved chunks. The summary prompt is a third: produce a markdown summary in one of three styles. Each prompt is a different tool with a different system message and a different output contract. We do not have one orchestrating mega-prompt that selects between modes — we have three scoped jobs that can't accidentally interfere with each other's instruction sets. This is what Isolation prevents: a "summarize this" instruction quietly bleeding into a "generate flashcards" call, or a "never use outside knowledge" constraint from the Ask tab leaking into the more permissive summary tab.
+
+**Caching — TTL is implicit in the data model.** The vector store is built once per document upload and reused across every Ask query and every flashcard retrieval until a new document is loaded. This is Caching by way of Streamlit's session-state semantics: `st.session_state["doc_rag"]` is invalidated when the user uploads new material, and only then. Embedding a 12,000-character article generates 30 chunks, each costing one embedding call. Without caching, the cost is paid on every Ask query — instead, it is paid once at upload time and amortized across the session. We don't yet have explicit TTL-based invalidation because the staleness profile of a study document over a single session is effectively zero; the user uploaded it intending to study it, and the document doesn't change while they're reviewing.
+
+That leaves Compaction. We don't use it explicitly, and the reason is that the design avoids the precondition. Compaction matters when conversational history accumulates beyond what the context window can hold while still attending to early instructions. StudyAI's longest LLM call is the Ask tab — a one-shot Q&A with five retrieved chunks plus the user's question. There is no fifty-turn conversation to compact, because the system architecture is structured around independent, stateless LLM calls fed by offloaded session state and selective retrieval. Compaction was eliminated as a needed mechanism by upstream choices that prevent the failure mode from arising. This is the cleanest version of "match the mitigation to the mechanism" — sometimes the cleanest mitigation is to choose an architecture where the failure cannot manifest in the first place.
+
+The benchmark we ran is a simulation rather than a live A/B, and we want to be honest about what it does and does not show. Three synthetic user profiles — Fast Learner (+8% accuracy per 10 answers), Normal Student (+5%), Slow Learner (+2%) — were tested for 100 rounds against the RL system and a baseline of random card selection with no scheduling. The Fast Learner with RL reached 100% accuracy by round 85; the baseline reached 90% over the same window — a +10 percentage-point delta from smarter card ordering. The Normal Student matched at 85% on both, with the RL system showing lower variance because the Q-Learning agent stopped over-presenting already-mastered cards. The Slow Learner plateaued at 60% on both — and the honest reading of that result is the chapter's own discipline applied to itself. Scheduling optimization cannot fix a comprehension bottleneck. When the user is not understanding the material, the right intervention is content simplification, not better intervals. The RL system did its job and the job was not the bottleneck.
+
+A simulation is not a live user study, and we won't pretend it is. What the simulation shows is that the RL system performs at least as well as random scheduling across all three user profiles and meaningfully better in the Fast Learner regime — which is the regime where adaptive scheduling has the most to optimize. What it does not show is whether the RL system improves real outcomes for real students learning real material, which is the experiment we have not yet run. The architectural claim — that Offloading, Retrieval, Isolation, and Caching compose cleanly for this problem — is independent of whether the RL agents end up beating Anki's SM-2 in production. The context-management design is what makes the system stable enough to *run* the comparison.
+
 I want to end with a seam I haven't resolved. A well-designed compaction pass preserves *critical* facts while compressing process. But "critical" is a function of what the agent will need to reason about *in the future*, and that future reasoning is exactly what the agent has not yet done. There is no clean rule for what to preserve beyond *everything a future step might need* — which reduces, in the limit, to preserving everything, which defeats the purpose. The discipline of compaction is an art at that boundary, and I do not have a sharp principle for when a compaction pass has preserved enough versus when it has over-compressed. The empirical answer is: you discover which case you're in only when the downstream failure occurs. If the rest of the framework is doing its job, this is the place where the next several years of practice will sharpen the rules.
 
 Mitigation must match mechanism. The wrong mitigation does not just fail to fix the problem — it produces a successful build, a closed ticket, and a false sense that the problem is addressed, while the actual failure continues to accumulate cost. The previous chapter gave you the diagnostic. This one gave you the interventions. Pairing them correctly is the discipline.
+
+
+---
+
+## A note about AI
+
+Context failures look like reasoning failures. The agent appeared to think incorrectly; the actual failure was missing information.
+
+Where the model genuinely helps: diagnosing whether a given failure was reasoning or context, given the trace. The distinction is non-obvious from output alone.
+
+Where the model does damage: confidently asserting one diagnosis when the other is correct. The diagnosis has to be verifiable against what the agent actually had access to.
+
+The rule: every agent failure is a context failure until you have ruled out context.
+
+---
+
+## AI Wayback Machine
+
+**Lucy Suchman** was anthropologist whose Plans and Situated Actions (1987) showed why context matters so much for intelligent action.
+
+**Run this:**
+
+```
+Who is Lucy Suchman, and how does their work connect to the context and agents we covered in this chapter? Keep it to three paragraphs. End with the single most surprising thing about their career or ideas.
+```
+
+→ Search **"Lucy Suchman"** on Wikipedia.
+
+**Now make the prompt better.** Try one of these:
+
+- Ask it to apply Lucy Suchman's framework to a specific agent design problem you face.
+- Add a constraint: "Answer including criticisms or limits of Lucy Suchman's framework."
+
+What changes? What gets better? What gets worse?

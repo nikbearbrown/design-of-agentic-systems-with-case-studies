@@ -158,3 +158,25 @@ What would change my mind: a documented production deployment of a coordinated a
 Still puzzling. Whether human approval nodes are genuinely the right long-term defense against emergent escalation, or whether they are a transitional architecture — appropriate for the current moment, destined to be replaced by automated oversight agents whose structural independence from the reinforcement loop is itself guaranteed by some other mechanism we haven't named yet. If it's the latter, this chapter's recommendation has a shelf life.
 
 The question I haven't been able to settle is the one underneath that: what is the maximum sustainable approval-node throughput before fatigue dominates? The literature on cognitive load in security review suggests it's surprisingly low — possibly tens per day, not hundreds. If that number holds, it sets a hard ceiling on how much of a production agent system can be safely gated, which in turn argues for aggressive automation of low-risk action classes and ruthless prioritization of which actions a human must actually see. That prioritization is itself an architectural decision, and it is where the frontier of this problem currently sits.
+
+
+---
+
+## AI Wayback Machine
+
+**John Holland** was founded complex adaptive systems and agent-based modeling at Michigan — the theoretical framework for emergent multi-agent coordination.
+
+**Run this:**
+
+```
+Who is John Holland, and how does their work connect to the coordinated multi-agent systems we covered in this chapter? Keep it to three paragraphs. End with the single most surprising thing about their career or ideas.
+```
+
+→ Search **"John Holland"** on Wikipedia.
+
+**Now make the prompt better.** Try one of these:
+
+- Ask it to apply John Holland's framework to a specific agent design problem you face.
+- Add a constraint: "Answer including criticisms or limits of John Holland's framework."
+
+What changes? What gets better? What gets worse?

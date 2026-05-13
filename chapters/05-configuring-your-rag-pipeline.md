@@ -137,3 +137,37 @@ One thing still puzzles me. The chunk-size sweet spot lands consistently between
 What would change my mind about all of this: a long-context model with uniform attention — no lost-in-the-middle effect, verified on held-out retrieval benchmarks — that matches two-stage RAG on precision@10 within 2× the per-query cost. That removes both arguments I've built this chapter on. I don't think it's coming this generation. I could be wrong about the next.
 
 Until then: build the pipeline. Inspect it bottom-up. And when it lies to you, the model is the last thing you touch.
+
+
+---
+
+## A note about AI
+
+RAG configuration is empirical — chunking, embedding, retrieval, reranking interact with your specific corpus. The model writes fluently about all four.
+
+Where the model genuinely helps: producing a structured ablation plan that varies one parameter at a time.
+
+Where the model does damage: recommending specific parameter values. The values depend on your corpus, your queries, your latency budget.
+
+The rule: the model designs the experiment; the experiment chooses the parameters.
+
+---
+
+## AI Wayback Machine
+
+**Karen Spärck Jones** was developed inverse document frequency (IDF) in 1972 — the statistical foundation underlying modern retrieval systems.
+
+**Run this:**
+
+```
+Who is Karen Spärck Jones, and how does their work connect to the configuring RAG we covered in this chapter? Keep it to three paragraphs. End with the single most surprising thing about their career or ideas.
+```
+
+→ Search **"Karen Spärck Jones"** on Wikipedia.
+
+**Now make the prompt better.** Try one of these:
+
+- Ask it to apply Karen Spärck Jones's framework to a specific agent design problem you face.
+- Add a constraint: "Answer including criticisms or limits of Karen Spärck Jones's framework."
+
+What changes? What gets better? What gets worse?

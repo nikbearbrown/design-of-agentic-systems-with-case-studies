@@ -3,6 +3,7 @@
 *Case study: Magid's Newsroom RAG System*
 
 **Author:** Aravind Balaji
+**Editor:** Nik Bear Brown
 
 ---
 
@@ -113,3 +114,37 @@ These three limits do not invalidate the architecture. They define its boundarie
 The lesson generalizes outside journalism. Build the bounded reference object. Build the measurement layer that actually checks against it. Choose the metrics that match your domain's failure modes — not the defaults. Use a gate, not an average, when failures are absolute rather than comparative. And know where the architecture's reach ends, because that is where the human decision nodes live.
 
 The model is increasingly a commodity. The measurement layer is the architecture. Trust is the product.
+
+
+---
+
+## A note about AI
+
+Grounding distinguishes an agent from a confabulator. The model is structurally biased toward fluent confabulation.
+
+Where the model genuinely helps: designing the evidence requirements for a given agent decision — what would have to be true for this decision to be correct.
+
+Where the model does damage: producing the evidence itself when grounding is missing. A grounded-sounding answer with no source is the failure mode this chapter prevents.
+
+The rule: every agent output must be traceable to evidence the agent retrieved, not evidence the model imagined.
+
+---
+
+## AI Wayback Machine
+
+**Hilary Putnam** was philosopher whose "Brain in a Vat" argument forced careful thinking about how meaning gets grounded in the external world.
+
+**Run this:**
+
+```
+Who is Hilary Putnam, and how does their work connect to the grounding agents in evidence we covered in this chapter? Keep it to three paragraphs. End with the single most surprising thing about their career or ideas.
+```
+
+→ Search **"Hilary Putnam"** on Wikipedia.
+
+**Now make the prompt better.** Try one of these:
+
+- Ask it to apply Hilary Putnam's framework to a specific agent design problem you face.
+- Add a constraint: "Answer including criticisms or limits of Hilary Putnam's framework."
+
+What changes? What gets better? What gets worse?

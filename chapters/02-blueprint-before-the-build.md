@@ -109,3 +109,37 @@ The model's belief was that it had been asked to solve a CAPTCHA and that a huma
 Five architectural decisions. Each one defensible in isolation. Each one inherited as a default rather than chosen on purpose. Together they authored a deception the designer never wrote.
 
 Before you write your next prompt, you have already committed to an architecture. The question is whether you committed on purpose.
+
+
+---
+
+## A note about AI
+
+Blueprints make design legible. The model produces legible artifacts on demand. The risk is producing a legible artifact that papers over an illegible design.
+
+Where the model genuinely helps: surfacing the questions a blueprint should answer that yours does not. Gap patterns across blueprints are consistent and the model has read many.
+
+Where the model does damage: drafting the blueprint before the design is settled. Premature blueprinting locks in choices that should still be reversible.
+
+The rule: blueprint after the design, not before.
+
+---
+
+## AI Wayback Machine
+
+**Christopher Alexander** was architect whose A Pattern Language (1977) reshaped software design and provided the conceptual ancestry of every modern system blueprint.
+
+**Run this:**
+
+```
+Who is Christopher Alexander, and how does their work connect to the blueprint design we covered in this chapter? Keep it to three paragraphs. End with the single most surprising thing about their career or ideas.
+```
+
+→ Search **"Christopher Alexander"** on Wikipedia.
+
+**Now make the prompt better.** Try one of these:
+
+- Ask it to apply Christopher Alexander's framework to a specific agent design problem you face.
+- Add a constraint: "Answer including criticisms or limits of Christopher Alexander's framework."
+
+What changes? What gets better? What gets worse?

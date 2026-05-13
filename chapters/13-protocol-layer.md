@@ -113,3 +113,37 @@ The composition of compositions — the discipline of designing the disciplines 
 The protocols handle the wiring. The composition has to handle the rest. The interesting failures, the next eighteen months of production incidents, are going to live in the gap between the two — and the gap is not going to be closed by a better protocol. It's going to be closed, if at all, by teams that recognize the gap exists and treat the discipline as a first-class architectural artifact rather than a thing to figure out incident by incident.
 
 The three protocols are necessary infrastructure. They are not the architecture. The architecture is what you build on top of them, and that's the work.
+
+
+---
+
+## A note about AI
+
+Protocols are where agents agree on what they are doing. Protocol design has specific failure modes the model can name but not avoid.
+
+Where the model genuinely helps: surfacing questions a protocol should answer that the current draft does not.
+
+Where the model does damage: drafting the protocol. Its value is specificity to your agents, which the model does not know.
+
+The rule: the model audits the protocol; you write it.
+
+---
+
+## AI Wayback Machine
+
+**Vint Cerf** was co-designed TCP/IP — the protocol layer that defines the modern internet and the conceptual ancestor of agent protocol design.
+
+**Run this:**
+
+```
+Who is Vint Cerf, and how does their work connect to the protocols we covered in this chapter? Keep it to three paragraphs. End with the single most surprising thing about their career or ideas.
+```
+
+→ Search **"Vint Cerf"** on Wikipedia.
+
+**Now make the prompt better.** Try one of these:
+
+- Ask it to apply Vint Cerf's framework to a specific agent design problem you face.
+- Add a constraint: "Answer including criticisms or limits of Vint Cerf's framework."
+
+What changes? What gets better? What gets worse?

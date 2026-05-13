@@ -6,7 +6,7 @@ Editor: Nik Bear Brown
 
 ---
 
-## ⚠️ About this document
+## ⚠ About this document
 
 This is a working draft produced for a book project, **not reviewed by an attorney**. Before using this with actual student contributors, have a lawyer licensed in your jurisdiction review it. Publication agreements involve copyright licensing, distribution terms, and — if any students are under 18 — minor-author considerations that vary by state and by institution. Northeastern University may also have its own policies about student-authored work produced in coursework.
 

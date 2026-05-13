@@ -129,3 +129,25 @@ I want to keep this visible. There's a tendency to treat every gap as a validati
 What's left puzzling for me — and I'll mark it because I haven't solved it — is when an ensemble should require unanimity versus a majority vote. Unanimity is more conservative and produces more escalations. Majority is faster but more permissive. The right answer probably depends on the *correlation structure* of the ensemble's failures. Highly correlated validators — same model family, similar prompts — fail together, and unanimity gives you nothing they don't already give you alone. Decorrelated validators — different families, different prompt structures — make unanimity meaningful. But I don't know how to estimate that correlation in practice, since the most dangerous correlations are the ones you didn't think to measure. A better framework would let me specify ensemble composition from first principles rather than from operational tuning. I haven't found it.
 
 The pipeline is fast where it can be, deterministic where it should be, and judgmental only where it must be — and even then, judgment is wrapped in disciplines that prevent its failure modes from becoming the system's. That's the architecture. The model is a capability the architecture deploys. The model is not the boundary.
+
+
+---
+
+## AI Wayback Machine
+
+**Bruce Schneier** was security technologist who has been writing about systems attack surfaces since the 1990s.
+
+**Run this:**
+
+```
+Who is Bruce Schneier, and how does their work connect to the agent attack surfaces we covered in this chapter? Keep it to three paragraphs. End with the single most surprising thing about their career or ideas.
+```
+
+→ Search **"Bruce Schneier"** on Wikipedia.
+
+**Now make the prompt better.** Try one of these:
+
+- Ask it to apply Bruce Schneier's framework to a specific agent design problem you face.
+- Add a constraint: "Answer including criticisms or limits of Bruce Schneier's framework."
+
+What changes? What gets better? What gets worse?

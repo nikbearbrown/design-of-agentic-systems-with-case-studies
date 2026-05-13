@@ -115,3 +115,37 @@ There's also a residue I haven't solved, and I want to mark it. The fallback rat
 The thing I most want you to leave with is this. Architecture is the leverage point, not the model. Swap GPT-4o for some future model three orders of magnitude more capable, and if the system still routes flat, it will pay the same structural overhead — possibly more, because better models cost more. The failure surface grows with model capability rather than shrinking, because the same amount of simple work is being priced against a higher-capability model. Only a routing layer that reflects the workload's actual complexity distribution ever escapes that surface.
 
 When teams reach for the vendor-comparison question — *should we use GPT-4o or Claude Sonnet?* — they are asking the wrong question. The question that would actually change their bill is *flat or tiered, and how is the classifier trained?* The first is a sub-question of the second. Getting them in the right order is the difference between a viable business and the $180,000 invoice that opened the chapter.
+
+
+---
+
+## A note about AI
+
+Economics here means token cost, latency, and compute. The model has no stake in the economics of using itself.
+
+Where the model genuinely helps: walking through the cost structure of a candidate architecture, given pricing data you provide.
+
+Where the model does damage: recommending architectures with confident cost estimates without flagging the volatility of pricing.
+
+The rule: economics is empirical and the empirics are yours.
+
+---
+
+## AI Wayback Machine
+
+**William Nordhaus** was Nobel-winning economist whose work on the economics of computation and energy frames how to think about per-token costs.
+
+**Run this:**
+
+```
+Who is William Nordhaus, and how does their work connect to the model economics we covered in this chapter? Keep it to three paragraphs. End with the single most surprising thing about their career or ideas.
+```
+
+→ Search **"William Nordhaus"** on Wikipedia.
+
+**Now make the prompt better.** Try one of these:
+
+- Ask it to apply William Nordhaus's framework to a specific agent design problem you face.
+- Add a constraint: "Answer including criticisms or limits of William Nordhaus's framework."
+
+What changes? What gets better? What gets worse?

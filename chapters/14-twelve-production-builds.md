@@ -186,3 +186,37 @@ Still puzzling. The chapter sets a static compaction threshold without giving yo
 The bottom-up generalization, though, holds. The system works the way its construction ordered it to work. Change the order, and you change which failures are visible to you. Which changes which failures you can fix.
 
 Build 4 before Build 7.
+
+
+---
+
+## A note about AI
+
+Production is where the design becomes a real system serving real users. The failure modes here are not the failure modes of the design phase.
+
+Where the model genuinely helps: enumerating production-only concerns — observability, error budgets, rollback paths, capacity headroom.
+
+Where the model does damage: declaring the system production-ready. Production readiness is a measurement against the environment, not a property of the design.
+
+The rule: production is a property of running systems; the checking happens in production.
+
+---
+
+## AI Wayback Machine
+
+**Grace Hopper** was wrote the first compiler (A-0) in 1952 — and pioneered the discipline of moving software from research prototype to production.
+
+**Run this:**
+
+```
+Who is Grace Hopper, and how does their work connect to the production builds we covered in this chapter? Keep it to three paragraphs. End with the single most surprising thing about their career or ideas.
+```
+
+→ Search **"Grace Hopper"** on Wikipedia.
+
+**Now make the prompt better.** Try one of these:
+
+- Ask it to apply Grace Hopper's framework to a specific agent design problem you face.
+- Add a constraint: "Answer including criticisms or limits of Grace Hopper's framework."
+
+What changes? What gets better? What gets worse?

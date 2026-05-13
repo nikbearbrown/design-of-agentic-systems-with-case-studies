@@ -21,7 +21,7 @@ Original source files (dated `2026-04-21-[slug].md`) remain intact under `../cha
 | 11 | model-economics | `[Student A + B merged]` | **Pattern case: Cost Blowout** (Ch. 10) | — | — |
 | 12 | choosing-your-weapon | Rahul Manohar | **Pattern case: Framework Choice** (pending OQ-008 — ship as pattern case or absorb into Ch. 5 drift) | — | — |
 | 13 | protocol-layer | `[Student — TA to fill in]` | **Pattern case: Protocol Layer** (pending OQ-008 — ship as pattern case or absorb into Ch. 4 drift) | — | — |
-| 14 | twelve-production-builds | `[Student — TA to fill in]` | No clean home in new 11-chapter structure. Candidate for cut or Volume 2. |  — | — |
+| 14 | twelve-production-builds | `[Student — TA to fill in]` | No clean home in new 11-chapter structure. Candidate for cut or Volume 2. | — | — |
 
 ## What's NOT here (Nik must write for Spring 2026)
 
@@ -39,7 +39,7 @@ Original source files (dated `2026-04-21-[slug].md`) remain intact under `../cha
 - Ch. 4 — Tool Use
 - Ch. 5 — Orchestration (file 03 is sidebar material only)
 - Ch. 8 — Meta-Reasoning
-- Ch. 9 — Trade-offs and Design Decisions (⚠️ risk chapter, draft last)
+- Ch. 9 — Trade-offs and Design Decisions (⚠ risk chapter, draft last)
 - Ch. 10 — Failure Modes (the five pattern cases are drafted; the theory-chapter framing that indexes them isn't)
 - Ch. 11 — When Not to Go Agentic
 

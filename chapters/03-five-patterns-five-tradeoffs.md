@@ -119,3 +119,37 @@ Return to the forty-seven-minute failure. With this vocabulary in hand, the diag
 I have to be honest about a seam in this argument. Each of the five patterns has a load-bearing parameter whose right value I cannot tell you in the abstract — ReAct's step limit, Plan-and-Execute's replanning threshold, Reflection's quality threshold and round count, Multi-Agent's timeout, the memory write-gate policy. Each has a class of failures on either side: too low, the system aborts legitimate work; too high, the failure mode the constraint was supposed to prevent returns. I do not yet have a principled rule for calibrating these against a specific deployment's workload. The chapter's claim is not that I know the right values. It is that the parameters must exist and be consciously set, rather than being defaulted or omitted entirely. Calibration is what the next several years of building production agents will figure out, and I expect the right defaults are workload-specific in ways no chapter can prescribe.
 
 When an agent fails, the forensic question is always the same. *What did the architecture permit that it should not have?* The answer is the fix. Not a better model. A better constraint. The architecture is not the thing that runs the model. It is the thing that decides what the model is allowed to do.
+
+
+---
+
+## A note about AI
+
+Patterns are categorical. Trade-offs are local. The model is good at the first and lossy at the second.
+
+Where the model genuinely helps: producing the canonical statement of each pattern and its conventional trade-off.
+
+Where the model does damage: telling you which pattern fits your system without knowing your system. Selection is local.
+
+The rule: pattern catalog from the model; selection from you.
+
+---
+
+## AI Wayback Machine
+
+**Erich Gamma** was co-authored the Gang of Four book Design Patterns (1994) — founding the modern vocabulary of design patterns and tradeoffs.
+
+**Run this:**
+
+```
+Who is Erich Gamma, and how does their work connect to the patterns and tradeoffs we covered in this chapter? Keep it to three paragraphs. End with the single most surprising thing about their career or ideas.
+```
+
+→ Search **"Erich Gamma"** on Wikipedia.
+
+**Now make the prompt better.** Try one of these:
+
+- Ask it to apply Erich Gamma's framework to a specific agent design problem you face.
+- Add a constraint: "Answer including criticisms or limits of Erich Gamma's framework."
+
+What changes? What gets better? What gets worse?

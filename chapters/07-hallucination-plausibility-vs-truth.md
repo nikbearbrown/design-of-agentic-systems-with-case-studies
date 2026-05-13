@@ -2,7 +2,7 @@
 
 *Why better prompts and bigger models leave the failure mode exactly where they found it*
 
-**Author:** Madhumitha Nandhikatti
+**Authors:** Madhumitha Nandhikatti, Gagana M
 **Editor:** Nik Bear Brown
 
 ---
@@ -122,6 +122,49 @@ That is the architectural claim worth holding. The model's citation-generation b
 
 ---
 
+## A worked example — the Drug Interaction Checker
+
+The opening composite is not far from a system the two of us actually built. The Drug Interaction Checker is a RAG-grounded tool aimed at a specific user — a non-expert caregiver managing several prescriptions for someone else, typing two drug names into a web form and trying to figure out whether the combination is dangerous. The wrong failure mode for this user is not a missing answer. The wrong failure mode is a confident answer that is partially fabricated.
+
+Here is the architecture, deliberately spare so the layers are visible.
+
+- **Brand-to-generic normalization.** The user types "Advil." The FDA OpenFDA API indexes labels under generic names ("ibuprofen"). A query against the brand returns nothing. We pass every input through the [NIH RxNorm REST API](https://lhncbc.nlm.nih.gov/RxNav/APIs/RxNormAPIs.html) first, which converts brand to generic before retrieval. This is a translation layer, not a verification layer — but skipping it produces silent retrieval failures downstream that would have looked like "no interaction" instead of "we couldn't find this drug."
+- **Retrieval against an authoritative source.** Each generic name triggers an [OpenFDA API](https://open.fda.gov/apis/drug/label/) call. We extract only the `drug_interactions` and `warnings` fields from the JSON response — not the full label, not chunks of arbitrary length. Each drug becomes one complete chunk containing its full interaction text. Embeddings are produced with `all-MiniLM-L6-v2`. The vector store is FAISS, local, CPU. The reason for the deliberate chunking choice is small but consequential: token-count chunking sometimes splits the `drug_interactions` section across two chunks, giving the model incomplete context, and incomplete context is exactly the input shape that produces plausible-looking partial answers.
+- **The retrieval completeness check.** This is the part that earns its place in this chapter. Before the LLM sees anything, a guard verifies that a label chunk was successfully retrieved for *every* drug in the query. If even one is missing, generation does not proceed. The user sees a visible warning naming the drug that was not found. The system does not produce a partial summary based on the half it retrieved. This is what kept our **silent failure rate at 0%** across the benchmark — not a model property, an architectural one.
+- **The strict generation prompt.** Temperature 0.1. Seven explicit rules: only state facts present in the retrieved label; if no interaction is documented, say "No interaction documented in FDA label" verbatim; always state severity (`contraindicated`, `major`, `moderate`, `minor`, or `none documented`); always state action (`avoid`, `consult pharmacist`, `monitor symptoms`); use plain language; do not fill gaps from general knowledge; close with the exact medical disclaimer word for word. We watched what happened at temperature 0.7 — the model would render hedged label language ("may increase risk") as "major," which is a clinically significant misrepresentation. The temperature drop and the explicit rule against gap-filling closed that path.
+- **The citation block.** Every output ends with the FDA label ID, the DailyMed submission identifier, and the `last updated` date. A pharmacist auditing the system can follow the citation directly to the source document. The model does not present its summary as its own knowledge; it presents it as a summary of one specific, verifiable document.
+
+Now the part of this case that matters most for a textbook on hallucination — and that we are going to tell you straight, because the alternative is the kind of dishonesty the chapter is about. **The benchmark did not meet our targets.**
+
+We constructed 50 drug-pair queries: 20 high-severity (warfarin + amiodarone, simvastatin + clarithromycin), 20 moderate (lisinopril + ibuprofen, sertraline + tramadol), 10 control pairs with no documented interaction. Scoring was four binary criteria worth one point each — interaction identified, severity stated, action provided, citation present — and a 3/4 was a pass. Targets: 0% silent failure, ≥80% pass rate, ≥90% retrieval recall, <20% false positive on controls. Actual results:
+
+| Metric | Target | Actual | Status |
+| --- | --- | --- | --- |
+| Silent Failure Rate | 0% | 0% | Achieved |
+| Overall Pass Rate | ≥80% | 48% (24/50) | **Not met** |
+| Retrieval Recall | ≥90% | 48% (24/50 retrieval-complete) | **Not met** |
+| False Positive Rate (Control) | <20% | N/A — no control queries completed | Not measurable |
+
+The 24 queries that completed averaged 3.96 out of 4 — only one fell to a 3/4, on lithium + ibuprofen, where the system correctly named the interaction and the action and the citation but missed the severity criterion.
+
+The other 26 queries did not complete. The breakdown is informative. Twenty-five hit a Groq API rate limit (HTTP 429) after the first 21 queries consumed the daily 100,000-token quota of the free tier — the benchmark was running `llama-3.3-70b-versatile` and the per-call token cost was higher than we'd modeled. One was blocked by the retrieval completeness check itself: atorvastatin + digoxin, where the FDA label for one of the two could not be retrieved, and the system did exactly what it was designed to do — refuse to generate.
+
+Read that result with the chapter's vocabulary. The generation layer, when it ran, was clean: 0% silent failure, average 3.96/4 across completed queries, no fabricated citations. The verification layer, when it fired, fired correctly: the one retrieval miss was surfaced as a missing-label warning, not papered over with a partial answer. The dominant failure mode was *infrastructure* — a free-tier rate limit on a benchmark execution run — not an architectural failure of the hallucination-mitigation design. That is a different kind of failure, and pretending the result was a clean 100% would have been the failure the chapter is most concerned with: producing plausible numbers that misrepresent the underlying state. The honest report is that the architecture's design properties held on every query that reached the architecture.
+
+The remediation is concrete. We're switching benchmark execution to `llama-3.1-8b-instant`, which is meaningfully more token-efficient and has higher free-tier limits, and re-running across multiple days so the daily quota does not rate-limit out the moderate and control categories. The architectural choices — RxNorm normalization, per-drug chunking, the retrieval completeness check, the strict prompt, the structured citation block — are not what we're changing.
+
+Three lessons travel from this build to any chapter you might write your own way through.
+
+The first is that the verification layer earns its keep most visibly on the queries that fail. A 0% silent failure rate is not a number that announces itself in the average case — most queries retrieve fine and generate fine. It announces itself the one time atorvastatin + digoxin can't be resolved and the system refuses to fabricate around the gap. You're paying for that single behavior with the entire architecture.
+
+The second is that benchmark infrastructure failures and architectural failures have to be reported separately or you lose the ability to reason about either. A 48% pass rate that bundles "the architecture didn't work" with "the free-tier rate limit hit at query 22" is a number that means nothing. Splitting the report into "of the queries the system actually ran, here is the score; of the queries it didn't run, here is why" is the discipline the chapter has been arguing for from a different direction the whole time.
+
+The third is that we built a hallucination-resistant pipeline and it still has failure modes worth naming explicitly. Polypharmacy isn't handled — a caregiver managing 10 medications has 45 unique pairs and the current system summarizes them in a single call, which will lose pair-specific severity. Dosage isn't an input — an interaction contraindicated at high doses may be acceptable at low ones with monitoring, and the FDA label often distinguishes. The label corpus is US-only — DailyMed doesn't index European or international formulations. None of these are reasons not to ship the system. They are reasons not to claim the system is doing more than it is.
+
+This is the discipline a Fact Check List Pattern protects when it is wired correctly: it lets you ship a system that is honest about its boundary, instead of a system that is fluent at the boundary's edge.
+
+---
+
 ## What to take with you
 
 Plausibility and truth are optimized by different objectives. Maximizing plausibility does not move output toward truth. Every architectural commitment in this chapter follows from that one observation. Remove the observation and the verification layer looks like paranoid over-engineering. Hold it, and the architecture is the only way a generative pipeline can be safely coupled to a high-stakes channel.
@@ -133,3 +176,37 @@ What still puzzles me. The verification layer can confirm a DOI exists. It can c
 What would change my mind. A production deployment of a generative agentic system, at meaningful scale — thousands of high-stakes outputs per month — that relied entirely on prompt-level mitigations and sustained a measurable fabrication rate below, say, 1 in 10,000 outputs over twelve months under adversarial workload. The chapter's claim is that this cannot be done. A documented counter-example would force a sharper specification of when prompt-level mitigation actually holds. I have not seen such a case. The pharmaceutical near-miss and *Mata v. Avianca* are the shape of cases I have seen.
 
 Hallucination is what happens when plausibility beats truth. The only place to put your finger on the scale is in the layer between generation and the world. Build that layer. Make UNCERTAIN a first-class output. Audit the SKIPPED rate monthly. The model will not save you, because saving you is not what its training objective rewards.
+
+
+---
+
+## A note about AI
+
+This chapter is about how plausible-sounding answers diverge from true ones. The note is the chapter's own argument applied to writing the chapter.
+
+Where the model genuinely helps: producing examples of plausible-but-false output for training your judgment.
+
+Where the model does damage: producing the analytical claims of this chapter without verification.
+
+The rule: in the chapter that warns about hallucination, do not let the model write claims you have not verified.
+
+---
+
+## AI Wayback Machine
+
+**Daniel Kahneman** was psychologist whose Thinking, Fast and Slow framework explains why fluent output gets trusted over careful reasoning.
+
+**Run this:**
+
+```
+Who is Daniel Kahneman, and how does their work connect to the plausibility vs truth in agents we covered in this chapter? Keep it to three paragraphs. End with the single most surprising thing about their career or ideas.
+```
+
+→ Search **"Daniel Kahneman"** on Wikipedia.
+
+**Now make the prompt better.** Try one of these:
+
+- Ask it to apply Daniel Kahneman's framework to a specific agent design problem you face.
+- Add a constraint: "Answer including criticisms or limits of Daniel Kahneman's framework."
+
+What changes? What gets better? What gets worse?

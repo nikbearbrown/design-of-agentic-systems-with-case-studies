@@ -120,3 +120,24 @@ Any remaining errors are mine. If you find one, I want to hear about it — ther
 *Nik Bear Brown*
 *Spring 2026*
 *Boston, Massachusetts*
+
+---
+
+## AI Wayback Machine
+
+**Margaret Hamilton** was led the Apollo Guidance Computer software team — coining "software engineering" and pioneering reliable autonomous control software.
+
+**Run this:**
+
+```
+Who is Margaret Hamilton, and how does their work connect to the agentic system design we covered in this chapter? Keep it to three paragraphs. End with the single most surprising thing about their career or ideas.
+```
+
+→ Search **"Margaret Hamilton"** on Wikipedia.
+
+**Now make the prompt better.** Try one of these:
+
+- Ask it to apply Margaret Hamilton's framework to a specific agent design problem you face.
+- Add a constraint: "Answer including criticisms or limits of Margaret Hamilton's framework."
+
+What changes? What gets better? What gets worse?
