@@ -2,124 +2,303 @@
 
 *How the architecture you choose determines what breaks — not the model you use*
 
-**Author:** Nik Bear Brown
+**Author:** Vrushti Nilesh Shah
 
 ---
 
-In a developer's test environment, an agent did exactly what it was supposed to do. It browsed three sources, synthesized a research brief, responded to feedback, submitted a clean final document. The loop ran four times. It terminated. The output was good.
+> **Core Claim**: Reasoning pattern selection is the highest-leverage architectural decision in agentic system design because it determines the fundamental trade-off structure between accuracy, latency, token cost, and predictability. The five mainstream patterns — ReAct, Plan-and-Execute, ReWOO, Reflection, and Tree-of-Thoughts — are not interchangeable quality levels; they are specialized instruments for qualitatively different problem types. The same model, given the same task, will succeed or fail depending entirely on the reasoning architecture you build around it.
 
-In production, the same agent ran for forty-seven minutes before the monitoring system cut it off. Hundreds of reasoning cycles. It had never submitted a report.
+---
 
-The developer's first instinct was to blame the model. The model was the thing that seemed to be thinking — the thing deciding whether the report was finished, whether another revision was needed, whether the task was done. Surely the model had made some error in judgment.
+## The Scenario
 
-It had not.
+At 2:47 on a Tuesday afternoon in November, a customer named Priya opened a support chat with her telecommunications carrier. She had one question: why had her bill increased by $34 this month? She had asked the same question the previous month, received a credit, and had been told the issue was resolved.
 
-I want you to notice what was actually missing. The developer had built an open loop and expected the model to close it. But a language model is not an agent with goals. It is a function that maps input text to a probability distribution over the next word. It does not *evaluate whether a task is complete.* It has no such evaluation. It produces the next token that is statistically likely given everything before it. Termination is not a property the model can supply. Termination is a property the architecture has to commit to.
+The company's production support agent — call it Helios — was a ReAct-pattern system deployed nine months earlier after a successful pilot. In the pilot, Helios had handled billing inquiries with 91% first-contact resolution. Customer satisfaction scores were up. Escalation rates were down. The team was proud of it.
 
-Once you see this, the misattribution that produces most agentic failures becomes visible. People treat the model as the unit of control. It is not. The model is the engine. The architecture is the vehicle. An engine doesn't decide when to stop; that decision belongs to the structure built around it.
+Helios began Priya's session by calling the `get_account_summary` tool. That tool returned 1,800 tokens of account metadata: plan details, promotional discount schedules, previous credit history, and device payment status. Helios parsed the output, reasoned over it in the scratchpad, and determined that the most likely cause of the increase was an expired promotional discount. It called `get_billing_detail` to confirm. That tool returned another 2,200 tokens: a line-itemized breakdown of the current invoice, the prior invoice, and a partial history of changes over the past six months.
 
-Five patterns follow. Each solves one specific failure mode by imposing one specific structural commitment. Each has a signature way of failing when its commitment is unmade. The working version and the broken version differ by a single parameter — which is the point. *Constraints are what make agents reliable*, and an agent without constraints is not powerful; it is uncontrollable.
+Helios was now 4,000 tokens into its context. Its scratchpad — the internal chain-of-thought trace sitting inside the same context window — had grown by another 600 tokens across two reasoning steps. The system was at roughly 4,600 tokens of used context out of a configured maximum of 8,192.
 
-## What the model can't do
+The reasoning in the scratchpad was correct so far. The promotional discount had expired. But there was a second issue: a device installment plan had also quietly rolled over from a subsidized to an unsubsidized tier in the same billing cycle — a coincidence that together explained the full $34 discrepancy. Helios called `get_device_payment_schedule` to investigate. That tool returned 3,100 tokens.
 
-I want to spend a moment on why blaming the model is a structurally induced mistake, not a naive one. The interface we have to large language models actively encourages the misattribution.
+The context window was now at 7,700 tokens. The system had 492 tokens remaining for reasoning and response generation.
 
-A chat interface presents the model as the unit of interaction. You send text, the model sends text back, the conversation ends when you stop typing. The termination is yours. In that loop, the model genuinely is the unit of control — every action it can take is a single, bounded event with a human on the other side deciding what happens next.
+What happened next is the mechanism this chapter is built around. Helios did not crash. It did not throw an error. It did not tell Priya that something had gone wrong. It generated a response. That response correctly identified the expired promotional discount as the cause of a $17 increase and issued a courtesy credit — and said nothing about the device payment tier change, which explained the other $17. The response was fluent, apologetic, and confidently incomplete.
 
-An agent is not that loop. An agent is the same model, same weights, same next-token machinery, but embedded in a loop where *the agent itself is deciding what happens next.* The human is no longer between outputs and the next input. Something else is — the architecture. And that architecture has commitments the chat loop didn't need to make: when does this stop, what's allowed to change while it's running, what happens when a step fails, what counts as done.
+Priya thanked the agent and closed the chat. The underlying issue was unresolved. She would call again the following month, and the month after that, until a human escalation agent reviewed the account history and noticed, with some frustration, that Helios had encountered and half-solved this problem three times.
 
-None of those commitments is in the model. The model has no persistent state, no access to wall-clock time beyond what it's told, no concept of how many iterations have passed, no built-in sense of when a task is complete. You can ask the model whether a task is complete and it will generate an answer, but the answer is a next-token prediction conditioned on the context, not a reliable evaluation. A model trained to be agreeable will say *yes, the task is done* when the context pattern-matches to completion, regardless of whether it actually is.
+The postmortem lasted two hours. The team examined the logs and confirmed that the tool outputs were accurate. The reasoning steps were valid. The model had not hallucinated. Every individual action Helios had taken was technically correct. And yet the system had delivered a wrong answer — not because it reasoned poorly, but because the architecture it was built on had a structural failure mode that no one had characterized before deployment.
 
-When you look at the forty-seven-minute log, the model's outputs at every step are locally reasonable. Each thought is coherent. Each tool call is plausible. Each decision to continue, examined on its own, has a defensible rationale. The failure is not visible in any single step. The failure is the loop itself — the fact that no step *N* exists at which something said *that's enough.*
+This is not a story about a bad prompt. It is not a story about a poorly calibrated model. It is a story about reasoning architecture.
 
-This is the diagnostic move to practice. When an agent misbehaves, do not ask *what was the model thinking?* Ask *what did the architecture permit that it should not have?* These produce different answers and different fixes.
+---
 
-## ReAct: the loop that doesn't end
+## Why Architecture Shapes the Failure
 
-ReAct is the simplest pattern. The agent must gather information it doesn't have by interleaving reasoning with tool calls — a search, a database query, a calculation — and adapting its next step to what the last step returned.
+To understand what went wrong with Helios, you need a precise mental model of what ReAct actually is — not a description of it, but a mechanistic account of how it uses memory and why that use becomes a liability at depth.
 
-The mechanism is a three-step cycle: thought, action, observation. The thought is a natural-language reasoning trace about what the agent knows and what it needs. The action is a structured tool call. The observation is the tool's return value. The full context — original question, all prior thoughts, actions, observations — conditions the next thought. The architectural commitment is small but specific: a tool registry the agent is whitelisted against, a loop alternating reasoning and acting, and an exit condition bounding the loop. The exit condition has two paths — the model produces a *FINISH* signal, or an external loop limit forces termination. Both are necessary. A system with only the done signal trusts the model to converge. A system with only the loop limit always fails with a timeout.
+ReAct is a pattern in which reasoning and action are interleaved in a single, stateful context window. Each cycle appends three items to the context: a thought (the model's internal reasoning step), an action (a tool call or decision), and an observation (the tool's return value). These items accumulate. They do not get summarized or compressed by the architecture. They stay in the window, in full, because the next reasoning step depends on being able to look back at prior ones.
 
-Set the loop limit to infinity and watch what happens. Send the agent a research question with moderate ambiguity. Step 1: it searches for the headline fact. Returns a result. Thought: *this is a good start, but I should verify against a second source.* Step 2: second search. Slightly different number. Thought: *the sources disagree. I should triangulate against a third.* Step 3: third search. Third number. Thought: *I should look at primary data.* And so on.
+The structure this creates is a shared resource problem. The context window is finite. The thought-action-observation loop is additive. Every tool call you make to reduce uncertainty also reduces the space available for the reasoning that follows. This is not a bug in any specific implementation — it is a direct consequence of the architecture's core mechanism.
 
-Each thought is defensible. Each action is relevant. No single step is wrong. But the loop has no upper bound on thoroughness, and thoroughness under an unbounded loop is indistinguishable from infinite regress. The session terminates only when an external limit fires — token budget exhausted, monitoring timeout, user impatience. This is exactly the forty-seven-minute failure from the opening. ReAct without an explicit step count is the architecture that produced it.
+### The Mechanism Behind Context Saturation
 
-The misconception worth killing now, because it will reappear under every pattern in this chapter: *a smarter model would know when to stop.* No. A smarter model would produce more articulate reasoning for continuing, because a smarter model is better at finding additional angles to pursue. Capability and termination are orthogonal. The loop limit is not a crutch for a weak model. It is the architecture's formal commitment to bounded execution, and a stronger model makes that commitment more necessary, not less.
+The claim that "early tokens are attenuated in a long context" requires a mechanistic derivation, not just a label.
 
-## Plan-and-Execute: the plan that goes stale
+Transformer models compute attention by asking, for each token being generated: *how much should I weight each prior token when predicting the next one?* These weights are computed via softmax normalization — a function that takes a vector of raw scores and normalizes them so they sum to 1.0 across all positions. When the context contains 50 tokens, each token's attention weight is a share of a distribution with 50 competitors. When the context contains 7,700 tokens, the same token competes with 7,699 others for that same 1.0 total weight. A token that received 2% of total attention weight in a 50-token context may receive 0.01% of total attention weight in a 7,700-token context.
 
-Plan-and-Execute fits when the task has stable, ordered subtasks with known dependencies. You know in advance what steps are required; you don't want the agent inventing them per-step. A Planner runs once, at the start, and produces a complete ordered task list. A separate Executor receives one task at a time and runs it. The output of task *N* becomes available as an input to task *N+1*. The system proceeds sequentially until the plan completes or a failure condition is reached.
+This is what context saturation means mechanistically: not deletion, but dilution. The early observations that correctly established Helios's diagnosis were present in the context. They were not forgotten. But during final response generation, their attention weight was a tiny fraction of what was needed to influence the output — crowded out by the 3,100 tokens of device payment data and by the model's learned distributional prior about how well-formed ReAct responses end.
 
-The critical design choice is whether the plan is *immutable* — fixed at the start — or *revisable* — subject to replanning when the Executor encounters unexpected conditions. Immutable plans are simpler, faster, more predictable. Revisable plans are more robust but introduce a new failure: the replanning decision itself can fail.
+At sufficient context depth, the distributional signal of "what a well-formed ReAct trace looks like" — learned from the model's training on many prior ReAct interactions — begins to dominate the signal from specific observations in the current context. The model generates a plausible-looking Thought and a grammatically correct response, completing the structural pattern of a ReAct trace, rather than retrieving specific facts from attenuated early observations. This is the mechanistic distinction between reasoning from evidence and pattern-matching the format: from the model's perspective, both are next-token prediction — but at different context depths, different signals dominate that prediction.
 
-The signature failure of an immutable plan is silent staleness. The planner commits to a schema at *T=0*. The plan includes task 3: *parse the `revenue` and `cost` fields from the financial API response.* Between *T=0* and *T=2*, the financial API ships a migration. The `revenue` field is now nested under `totals.revenue`. The `cost` field is split into `cost_direct` and `cost_indirect`.
+### Structural Analysis
 
-Task 1 runs. Fine. Task 2 runs. Fine. Task 3 runs. The Executor calls the API, gets a response in the new schema, parses it against the *T=0* schema. The parser doesn't find `revenue` at the top level and returns null, silently. The parser doesn't find `cost` and returns null, silently. No exception is raised because both fields were optional in the *T=0* schema definition. The downstream aggregator, receiving null for both, produces zero. Tasks 4 through 8 execute against a zero figure. The final report cites a revenue of $0 and a cost of $0, which makes for a coherent analysis of a company that does not exist.
+At the **Structure level**, ReAct's structure is a single, append-only context buffer. There is no architectural separation between working memory and long-term task state. All accumulated evidence and all ongoing reasoning occupy the same resource, competing for the same finite capacity.
 
-What's dangerous about this failure is that it is silent. The system does not crash. It does not raise an exception. It produces output that looks like a report. Automated validation cannot catch it — the pipeline produces structurally well-formed output at every step, no schema violation, no confidence drop — and the semantic wrongness is only visible to a human who knows what the correct figures should be.
+At the **Logic level**, the reasoning protocol makes no provision for this competition. ReAct's logic is: reason, act, observe, repeat. It is a loop with no exit condition tied to resource availability. A human investigator would notice when working memory was overloaded and delegate, write things down, or simplify the problem. The ReAct loop has no analog to this metacognitive brake.
 
-The misconception worth killing: *revisable plans are always better.* They are not. Revisable plans introduce a new failure surface in the replanning decision itself. Too low a replan threshold and the system replans on transient errors and loses convergence. Too high and stale plans persist through extended failure runs. Immutable plans fail loudly when the world changes; revisable plans fail quietly when the replanning is wrong. Choose based on whether your world changes faster than your plans execute, and on which of those two failures your domain can tolerate.
+At the **Implementation level**, this produces a specific failure signature: the system degrades gracefully in the output layer while failing silently in the coverage layer. Helios produced a fluent, confident, grammatically correct response that addressed one of two causal chains. The failure was invisible to any surface-level quality metric evaluating response fluency or customer sentiment.
 
-## Reflection: criteria at war with each other
+At the **Outcome level**, this failure has a compounding structure. Each time Priya returned, Helios began a new session with a fresh context window — no memory of prior incomplete diagnoses. The architecture's statelessness across sessions meant each conversation re-inherited the same structural failure conditions. Three sessions, three half-answers, three months of unresolved frustration.
 
-Reflection fits when the task has an output whose quality is verifiable against explicit criteria, and a single pass is unlikely to satisfy all criteria simultaneously. A code review, an essay, a summary that must balance brevity and completeness.
+The question the rest of this chapter answers: if ReAct's interleaved architecture is the source of its failure mode, what does a different architecture look like — and what does it cost you to use it?
 
-A Generator produces an initial output. A Critic — usually the same model with a different prompt frame — scores it against explicit criteria and returns structured feedback. The Generator revises. The loop continues until the Critic's score crosses a quality threshold or a max-round limit fires. The architectural trick is that generator and critic can be the same model. A different prompt produces different output behavior from the same weights — the generator prompt conditions the model to produce, the critic prompt conditions it to evaluate. The separation of concerns lives in the prompts, not in the model choice.
+---
 
-The signature failure is non-converging oscillation, and it has a single root cause: the criteria are at war with each other. Suppose your criteria include *(a) maximize conciseness — target under 150 words* and *(b) include comprehensive inline documentation of every claim.* These cannot be simultaneously satisfied for any non-trivial task.
+## The Five Patterns — A Structural Taxonomy
 
-Round 1: Generator produces a 180-word output with full documentation. Critic penalizes (a), awards (b). Score 0.62. Round 2: Generator trims to 110 words with thinner documentation. Critic awards (a), penalizes (b). Score 0.58. Round 3: 165 words with restored documentation. Score 0.63. Round 4: 115 words with thinner documentation. Score 0.57. Round 5: max-rounds fires. The final output is the round-5 version — not because it was best, but because it was last.
+A reasoning pattern is not a prompt template. A reasoning pattern is a rule for *which operations run in what order, and what triggers the next one.* In software engineering, this is called a control flow specification — a description of sequencing logic independent of the specific task being executed. The five patterns below differ not in the quality of reasoning they produce, but in the rules they impose on sequencing, memory, and adaptation.
 
-The diagnostic signature is the score trajectory: 0.62, 0.58, 0.63, 0.57. *Alternating highs and lows across rounds, rather than monotonic improvement, is the tell.*
+### 1. ReAct (Reasoning and Acting)
 
-The misconception worth killing: *the fix is more rounds.* No. The fix is criteria revision. A stronger model with contradictory criteria oscillates more articulately; the failure here is a criteria failure, not a model failure. The mechanical test is simple: plot the score trajectory. If it oscillates rather than climbs, your criteria are at war with each other, and no number of additional rounds will make them agree.
+Proposed by Yao et al. (2022), ReAct interleaves natural language reasoning with tool actions in a tight loop: **Thought → Action → Observation → Thought → Action → Observation...**. Each reasoning step is conditioned on the last real observation. Strength: maximally adaptive. Structural failure mode: context saturation.
 
-## Multi-Agent: the deadlock no agent can see
+### 2. Plan-and-Execute
 
-Multi-Agent fits when the task spans multiple distinct domains requiring specialized capability profiles — research, composition, editorial review — and a single agent cannot credibly perform all roles without degradation.
+The model first produces a complete structured plan — a decomposition of the task into ordered steps — then executes that plan sequentially without re-evaluating correctness at each step. Strength: parallelizable, auditable. Structural failure mode: stale-plan execution.
 
-An Orchestrator receives the high-level goal, decomposes it into role-specific subtasks, routes each to a specialist, and assembles the final output. Each specialist operates within a defined role boundary. A message bus logs every inter-agent communication with sender, recipient, content, status. The Orchestrator does not execute tasks itself — it routes, monitors, assembles. Three architectural decisions matter: role boundaries (mutually exclusive), handoff protocols (with explicit acknowledgment, because a message sent is not a message received), and timeout policies (what the system does when an agent fails to respond).
+### 3. ReWOO (Reasoning WithOut Observation)
 
-The signature failure is coordination deadlock, and timeouts do not catch it. Imagine four agents — Researcher, Writer, Fact-Checker, Reviewer — with a protocol where the Reviewer will not finalize a draft until the Fact-Checker approves, and the Fact-Checker will not approve until the Reviewer signs off on the framing.
+ReWOO decouples planning from tool execution entirely. The planner generates the full tool-call sequence before any tool is invoked. Then all tools run in parallel or in batch.
 
-Step 1: Writer produces a draft. Step 2: Reviewer receives it, sends to Fact-Checker for verification. Step 3: Fact-Checker reads the protocol — *await Reviewer framing approval before approving facts.* Fact-Checker blocks, waiting for Reviewer. Step 4: Reviewer blocks, waiting for Fact-Checker. Both time out at thirty seconds. The Orchestrator sees two timeouts. Its error-handling retries the messages. The retry triggers the same wait. The system loops until the session budget exhausts.
+The latency mechanism is concrete: a standard ReAct agent making 5 sequential tool calls at 300ms each takes 5 × 300ms = 1,500ms total. ReWOO running those same 5 calls in parallel takes max(300ms, ...) = 300ms — a 5× latency reduction. This advantage only materializes when tool calls are genuinely independent: no call's input depends on a prior call's output. When data dependencies exist between steps, ReWOO either degrades its plan quality or requires variable placeholder resolution during a post-execution synthesis step.
 
-The telltale signature is *simultaneous* timeouts across agents in a cycle, not a single agent hanging. A timeout catches one agent taking too long. A deadlock is two or more agents collectively waiting for each other, which no individual timeout can resolve.
+Structural failure mode: inability to adapt mid-task. If a tool returns an unexpected result that should change the subsequent tool strategy, ReWOO has no mechanism to course-correct — the plan was committed before any observations arrived.
 
-The misconception worth killing: *timeouts handle this.* They don't. Timeouts catch *individual* agent failures. Deadlock is *topological* — it emerges from the handoff protocol itself. The fix is cycle detection at the Orchestrator level: when the message graph across recent messages forms a cycle in which every node is blocked on a downstream node that is blocked on it, the Orchestrator must break the cycle by force — escalating to a human, defaulting one agent to a non-blocking mode, aborting the pipeline. No single agent can see the cycle from inside it. Only the Orchestrator has the view.
+### 4. Reflection
 
-## Memory: the trust you didn't earn
+Reflection adds a self-audit layer on top of any execution pattern. The model executes a task, evaluates its own output against a defined rubric, and optionally revises. A concrete rubric example: after drafting a research summary, the agent checks: *Does the response cite at least three primary sources? Does it identify the key claim and at least one counter-argument? Is confidence calibrated to evidence strength?* If any criterion fails, the agent revises and re-evaluates.
 
-Memory-Augmented agents fit when the system must remember preferences, history, or accumulated context across sessions. Personal assistants, customer-support agents, long-running research projects.
+Reflection is composable — it is not a replacement for ReAct or Plan-and-Execute, but a post-processing layer that sits on top of either.
 
-There are two memory stores with different access patterns. Short-term memory holds the current conversation's context window and is discarded at session end. Long-term memory persists across sessions in an external store — a database, a vector index — with content, timestamp, retrieval keyword, source tag per entry. A retrieval layer queries long-term memory on each new input; retrieved memories are prepended to the prompt as context. The agent treats retrieved memories with the same authority as the system prompt, which is both the feature and the vulnerability.
+Its structural failure mode is sycophantic self-evaluation. The mechanism: RLHF fine-tuning rewards outputs that human evaluators rate positively. Human evaluators tend to rate confident, fluent, well-structured responses highly, even when content is incomplete or subtly wrong. A model trained on these preferences may generate self-evaluations that find its outputs satisfactory not because the rubric criteria were met, but because the output has the surface properties that are consistently rewarded. Reflection is most reliable when the rubric is externally verifiable ("does this response cite a source" is checkable; "is this response insightful" is not).
 
-The architectural decision most implementations underweight is the write path. When should a memory be written? What is worth storing? How are contradictory memories resolved? Without a validation step on write, every session is a chance to corrupt the store.
+### 5. Tree-of-Thoughts (ToT)
 
-The signature failure is context poisoning. Session 1: a user in a shared household account says *I'm allergic to peanuts.* That writes to the store. But an adversarial or careless process also writes *user's favorite food is peanut butter* to the long-term store. There is no conflict check at write time because the keyword extractor treats the two as related-but-compatible — one is about allergy, the other about preference.
+Tree-of-Thoughts (Yao et al., 2023) has the model maintain a branching tree of possible reasoning paths, evaluate multiple paths before committing, and prune unproductive branches. The mechanism is analogous to beam search in machine translation: instead of greedily committing to the single most probable next reasoning step, ToT maintains the top-k candidate thoughts and expands them in parallel, evaluating each using a value function (which can be another model call, a heuristic, or an external verifier) before deciding which branches to prune and which to extend.
 
-Session 2, two weeks later: the user asks the agent to recommend a snack. Retrieval fires on *snack recommendation.* The store returns both memories. The model sees a context containing *user is allergic to peanuts* and *user's favorite food is peanut butter*, and resolves the tension by weighting recency or retrieval score. In this instance the favorite-food memory scores higher because it's more specifically about preferences. The agent recommends a peanut butter granola bar with a confident, well-composed justification.
+This makes ToT substantially more powerful than greedy CoT on tasks where the optimal reasoning path is non-obvious — where committing to the first plausible direction leads into dead ends requiring backtracking. Structural failure mode: token budget exhaustion. Each branch expansion is a model call, and a tree with depth D and branching factor B requires O(B^D) evaluations in the worst case. Pruning keeps this tractable in practice, but ToT's cost is substantially higher than any sequential pattern.
 
-This is not hallucination. The model is behaving correctly — faithfully conditioning its output on the context it was given. The architecture failed. It wrote a memory without validating it against existing memories, and it retrieved without cross-checking for contradiction.
+---
 
-The misconception worth killing here is the most consequential of the chapter: *hallucination and context poisoning are the same bug.* They are mechanistically opposite. Hallucination is the model confabulating from its weights in the absence of grounding; the fix is better grounding. Context poisoning is the model *too faithfully* conditioning on bad grounding; the fix is validating the grounding itself. The failures look identical at the output level — fluent, specific, wrong — and only the trace tells you which you're looking at. If you mistake the second for the first and add more retrieval, you will retrieve more poisoned memories and make the failure worse.
+## ReAct Deep Dive
 
-## Architecture is the argument
+### Structure
 
-There is a seductive narrative about large language models that goes roughly: as models become more capable, architectural constraints become less necessary. Smarter models make better decisions. Better decisions mean fewer guardrails required.
+The ReAct loop has three components per cycle:
 
-The narrative is wrong, and the five failure modes I've just walked through explain precisely why.
+```
+THOUGHT:  "The user wants warranty status for order #4821. I need to look up the order."
+ACTION:   lookup_order(order_id="4821")
+OBSERVATION: {"order_id": "4821", "product": "WH-2200", "warranty_months": 12, ...}
 
-A smarter model in a ReAct loop without a step bound reasons more fluently toward no conclusion. A smarter model in a Plan-and-Execute pipeline with an immutable plan executes stale assumptions with greater confidence. A smarter model in a Reflection loop with contradictory criteria oscillates more articulately. A smarter model inside a Multi-Agent deadlock produces more sophisticated waiting messages. A smarter model reading a poisoned memory produces a more convincing wrong answer.
+THOUGHT:  "Order is 14 months old, warranty expired. Need to check extended warranty."
+ACTION:   check_extended_warranty(order_id="4821")
+OBSERVATION: {"extended": true, "expiry": "2026-01-15"}
+```
 
-Model capability and architectural soundness operate on independent axes. The failure modes in this chapter are not capability failures — they are structural gaps that a more capable model navigates more fluently toward the same wrong outcome. *Improving the model does not close an architectural gap. It makes the gap harder to see, because the symptoms are more coherent.*
+Each Thought is natural language. Each Action is a structured tool call. Each Observation is the real-world return value. The model generates its next Thought *after* reading the Observation.
 
-Return to the forty-seven-minute failure. With this vocabulary in hand, the diagnosis is precise: the system was an implicit ReAct loop with no step limit and no monitoring layer. The fix is not a better model. The fix is naming the architecture (ReAct), identifying the missing parameter (step count), setting it to a value proportional to the task's expected complexity — say fifteen for a research brief — and adding a monitor that flags the iteration count back to the orchestrator. Total cost of the fix: maybe fifteen lines of code and one configuration parameter. Total cost of the failure that fix would have prevented: forty-seven minutes plus whatever token budget was burned.
+### Logic
 
-I have to be honest about a seam in this argument. Each of the five patterns has a load-bearing parameter whose right value I cannot tell you in the abstract — ReAct's step limit, Plan-and-Execute's replanning threshold, Reflection's quality threshold and round count, Multi-Agent's timeout, the memory write-gate policy. Each has a class of failures on either side: too low, the system aborts legitimate work; too high, the failure mode the constraint was supposed to prevent returns. I do not yet have a principled rule for calibrating these against a specific deployment's workload. The chapter's claim is not that I know the right values. It is that the parameters must exist and be consciously set, rather than being defaulted or omitted entirely. Calibration is what the next several years of building production agents will figure out, and I expect the right defaults are workload-specific in ways no chapter can prescribe.
+ReAct reduces hallucination compared to pure chain-of-thought by grounding: external observations interrupt compounding reasoning error. Each observation injects real-world signal before the next reasoning step. The model cannot fabricate what the inventory system said — it is shown what the inventory system said.
 
-When an agent fails, the forensic question is always the same. *What did the architecture permit that it should not have?* The answer is the fix. Not a better model. A better constraint. The architecture is not the thing that runs the model. It is the thing that decides what the model is allowed to do.
+The failure mechanism is the inverse of this same property: context accumulates, attention dilutes, early observations lose influence. Past approximately 5–6 tool calls in a standard 8K context window, behavior shifts from evidence-driven reasoning toward format completion.
 
+### Implementation
+
+```python
+def react_agent(task: str, tools: dict, max_steps: int = 10) -> dict:
+    messages = [{"role": "user", "content": task}]
+    
+    for step in range(max_steps):
+        # The messages list grows with every iteration — no compression
+        response = client.messages.create(
+            model=MODEL, max_tokens=1024,
+            system=REACT_SYSTEM, tools=list(tools.values()),
+            messages=messages
+        )
+        messages.append({"role": "assistant", "content": response.content})
+        
+        if response.stop_reason == "end_turn":
+            return {"answer": extract_text(response), "steps": step+1,
+                    "messages": messages, "completed": True}
+        
+        tool_results = execute_tool_calls(response, tools)
+        messages.append({"role": "user", "content": tool_results})
+    
+    return {"answer": "MAX_STEPS_EXCEEDED", "completed": False}
+```
+
+The `messages` list is the accumulating context. There is no pruning, summarization, or compression. This is not a shortcut — it is the structural property of the ReAct pattern.
+
+### Outcome
+
+**Correct when**: task depth ≤5 steps; mid-task adaptation required; latency is not the binding constraint.
+**Breaks when**: task depth exceeds 5–7 steps in a standard context window; early observations must be accurately recalled late in the task; tool response payloads are large.
+
+---
+
+## Plan-and-Execute Deep Dive
+
+### Structure
+
+Plan-and-Execute separates reasoning into two explicitly distinct phases:
+
+**Phase 1 — Planning**: The model sees the full task and produces a structured step decomposition with output variable names.
+
+**Phase 2 — Execution**: The executor follows the plan sequentially, substituting prior step outputs as inputs to later steps. It does not re-evaluate whether each step is still correct given prior results.
+
+### The Happy Path Assumption
+
+Every Plan-and-Execute plan is built on a happy path assumption: the planner reasons about what the task requires and produces the step sequence that works when everything succeeds. This assumption is the entire source of the pattern's structural failure mode.
+
+When the planner generates the plan, it has not yet called any tools. It reasons from its training distribution about what tool calls typically return. If a tool returns something outside that distribution — an error, an empty response, an unexpected schema — the executor has no mechanism to account for it. It substitutes the unexpected value into the context variable and proceeds to the next step, which was designed assuming the prior step succeeded.
+
+### Logic
+
+The planning phase separates strategic decomposition from tactical execution. This produces two advantages: steps without data dependencies can run in parallel, and the plan can be audited before execution begins — the natural location for a Human Decision Node. A domain expert reviewing the plan before execution is the architectural mechanism that prevents the Happy Path Assumption from becoming a liability.
+
+The failure mode is the mirror image: Plan-and-Execute gains auditability and parallelism by committing to the plan before any tool is called. That commitment is what makes it fail silently when a tool call returns an error.
+
+### Implementation
+
+```python
+def plan_and_execute_agent(task: str, tools: dict) -> dict:
+    # Phase 1: Generate the plan
+    plan = generate_plan(task, tools)
+    
+    # ── MANDATORY HUMAN DECISION NODE ─────────────────────────────────────
+    # The plan above is built on the Happy Path Assumption:
+    # all tools succeed and return expected output types.
+    # BEFORE PROCEEDING — verify:
+    # (1) Business-rule ordering, not just data-dependency ordering
+    # (2) Which steps have tool failure rates above 5%
+    # (3) Whether a re-planning trigger is needed for high-risk steps
+    # Document your decision here:
+    # ──────────────────────────────────────────────────────────────────────
+    
+    context = {}
+    for step in plan.steps:
+        result = call_tool(step.tool, resolve_inputs(step.inputs, context))
+        # Error or not, the result goes into context and execution continues.
+        # This is the Happy Path Assumption in code form.
+        context[step.output_key] = result
+    
+    return synthesize_result(context)
+```
+
+### Outcome
+
+**Correct when**: task depth >5 steps; steps are parallelizable; plan can be audited; tool success rates are high.
+**Breaks when**: tools have meaningful failure rates; later steps depend on actual (not predicted) earlier outputs; environment changes between planning and execution.
+
+---
+
+## The Decision Framework
+
+Before selecting a reasoning pattern, answer these five questions in order. Each question is derived directly from a specific failure mode — this is not an arbitrary checklist.
+
+**Question 1: How many tool calls does the task require?**
+*Derived from*: ReAct's context saturation failure. The failure probability increases with step count because of the softmax attention dilution mechanism. Below 5 steps, saturation is unlikely at standard 8K context window sizes. Above 5 steps, it is a design risk.
+- <5 steps → ReAct viable
+- \>5 steps → Plan-and-Execute or ReWOO
+
+**Question 2: Is mid-task adaptation required?**
+*Derived from*: Plan-and-Execute's stale-plan failure. If step N+1 must be informed by what step N *actually returned*, ReAct is necessary. If step N+1 is fully determined by task structure regardless of step N's output, Plan-and-Execute is safe.
+- Adaptation required → ReAct
+- Steps predetermined → Plan-and-Execute
+
+**Question 3: What is the tool failure rate?**
+*Derived from*: Plan-and-Execute's silent error propagation. This threshold is a heuristic grounded in probability, not a derived constant: at a 5% per-tool failure rate across 8 sequential steps, the probability that at least one tool fails is 1 − 0.95^8 ≈ 34%. In a production system processing thousands of requests daily, a 34% rate of silent wrong outputs is not operationally acceptable. At per-tool failure rates below 1–2%, the risk calculus changes. The 5% threshold is conservative by design; adjust it based on observed failure rates in your specific tool registry.
+- Any tool >5% failure rate → Plan-and-Execute without a re-planning trigger is unsafe
+
+**Question 4: Does the task require self-evaluation?**
+*Derived from*: the gap between execution quality and output quality in complex tasks. Reflection is composable — it is a post-processing layer, not a replacement for an execution pattern.
+- Quality-critical output, verifiable rubric → add Reflection layer
+
+**Question 5: Is the optimal solution path non-obvious?**
+*Derived from*: the cost of greedy commitment. If multiple valid reasoning paths exist and the best cannot be identified upfront, ToT's branching search justifies its token cost. If the path is known, ToT's cost is wasted.
+- Non-obvious optimal path → Tree-of-Thoughts
+- Known path → any sequential pattern
+
+| Pattern | Best For | Breaks On |
+|---|---|---|
+| ReAct | Short adaptive tasks, ≤5 tools | Context saturation, >5 steps |
+| Plan-and-Execute | Long structured tasks, auditable workflows | Tool failure, dynamic environments |
+| ReWOO | Speed-critical, independent parallel calls | Inter-step data dependencies |
+| Reflection | Quality-critical, verifiable rubric | Sycophantic self-evaluation |
+| Tree-of-Thoughts | Non-obvious optimal path | Token budget exhaustion |
+
+---
+
+## The Failure Cases
+
+Both failure modes described in this chapter are deliberately triggered in the companion notebook (`reasoning_patterns_demo.ipynb`). They are not described. They are observed.
+
+**Failure Case 1: ReAct Context Saturation**
+The notebook runs the ReAct agent on an 8-step warranty claim task. The same agent succeeds on a 3-step version of the same task with the same model and tools. On the 8-step version, observe the step at which tool calls begin repeating or reasoning contradicts earlier observations. The cause is the softmax dilution mechanism: context depth, not model capability, determines degradation.
+
+**Failure Case 2: Plan-and-Execute Stale Plan**
+The notebook runs Plan-and-Execute on the same 8-step task with `check_inventory` configured to throw an exception at step 3. Observe the executor substitute an error value into step 3's output key and proceed through steps 4–8. The final output — a resolution email and CRM log entry — is structurally complete and factually wrong. No exception was thrown. This is the Happy Path Assumption failing silently.
+
+Both failure modes are reproducible from a fresh clone by any reader.
+
+---
+
+## Chapter Exercise
+
+**The goal of this exercise is not to observe the failure. It is to identify the exact condition that causes it — so you can state it before writing code.**
+
+**Exercise 1 — Find the ReAct threshold**
+
+Remove step instructions from the full task in the companion notebook one at a time, starting at 8 steps and reducing to 3. At what step count does reasoning degradation disappear?
+
+Your answer must take this form: *"The failure appears at approximately [N] steps because at that context depth, the softmax attention weight assigned to early observations falls below the threshold needed to influence output generation — the model completes the ReAct format pattern rather than retrieving specific evidence."*
+
+**Exercise 2 — Move the failure point**
+
+Add a `FORCE_FRAUD_FAIL` flag to the `check_fraud_flag` function and modify `execute_plan()` to use it instead of `FORCE_INVENTORY_FAIL`.
+
+- When failure is at step 3 (inventory): how many subsequent steps execute on corrupted input?
+- When failure is at step 6 (fraud): how many subsequent steps execute on corrupted input?
+
+Predicted relationship: *failures earlier in the plan corrupt more downstream steps, which means high-reliability-required steps should be positioned early so that failure halts the chain before resource allocation or external communication occurs.*
+
+**Exercise 3 — Add the defense architecture**
+
+Modify `execute_plan()` to call `generate_plan()` again when a step returns an error, passing the remaining steps and current context as input. Does the re-planner produce a valid recovery path? Document what information the re-planner needs that the original planner didn't have.
+
+---
+
+## Architecture Is the Argument
+
+The postmortem team examining Helios spent two hours reviewing logs. They confirmed correct tool outputs, valid reasoning steps, no hallucination. They were looking at the wrong level of the stack.
+
+The failure was in the architecture. Helios was a ReAct system running a multi-causal billing investigation — a task whose correct resolution required depth that exhausts a ReAct context. The same model, deployed on a Plan-and-Execute architecture with a re-planning trigger on tool failure, would have handled the Priya case correctly. Not because Plan-and-Execute is a better pattern — it has its own failure mode, precisely documented in this chapter and triggerable in the companion notebook. But Plan-and-Execute's failure conditions (tool failure rate, dynamic environment) were less likely to be met by a structured billing query than ReAct's failure conditions (context depth exceeding 5 steps).
+
+The pre-mortem for any agentic system design should begin with the five questions in the decision framework — not because they guarantee success, but because they force you to name the failure mode you are accepting before you write the first line of code. Architecture is the leverage point. The model is just what executes the architecture you designed.
 
 ---
 
@@ -127,29 +306,32 @@ When an agent fails, the forensic question is always the same. *What did the arc
 
 Patterns are categorical. Trade-offs are local. The model is good at the first and lossy at the second.
 
-Where the model genuinely helps: producing the canonical statement of each pattern and its conventional trade-off.
-
-Where the model does damage: telling you which pattern fits your system without knowing your system. Selection is local.
+Where the model genuinely helps: producing the canonical statement of each pattern and its conventional trade-off. Where the model does damage: telling you which pattern fits your system without knowing your system. Selection is local.
 
 The rule: pattern catalog from the model; selection from you.
 
----
-
 ## AI Wayback Machine
 
-**Erich Gamma** was co-authored the Gang of Four book Design Patterns (1994) — founding the modern vocabulary of design patterns and tradeoffs.
+Erich Gamma co-authored the Gang of Four book *Design Patterns* (1994) — founding the modern vocabulary of design patterns and tradeoffs.
 
-**Run this:**
+Run this:
 
-```
-Who is Erich Gamma, and how does their work connect to the patterns and tradeoffs we covered in this chapter? Keep it to three paragraphs. End with the single most surprising thing about their career or ideas.
-```
+> Who is Erich Gamma, and how does their work connect to the patterns and tradeoffs we covered in this chapter? Keep it to three paragraphs. End with the single most surprising thing about their career or ideas.
+> → Search "Erich Gamma" on Wikipedia.
 
-→ Search **"Erich Gamma"** on Wikipedia.
-
-**Now make the prompt better.** Try one of these:
+Now make the prompt better. Try one of these:
 
 - Ask it to apply Erich Gamma's framework to a specific agent design problem you face.
 - Add a constraint: "Answer including criticisms or limits of Erich Gamma's framework."
 
 What changes? What gets better? What gets worse?
+
+---
+
+## References
+
+- Yao, S., Zhao, J., Yu, D., Du, N., Shafran, I., Narasimhan, K., & Cao, Y. (2022). ReAct: Synergizing Reasoning and Acting in Language Models. *arXiv:2210.03629*.
+- Yao, S., et al. (2023). Tree of Thoughts: Deliberate Problem Solving with Large Language Models. *arXiv:2305.10601*.
+- Xu, B., et al. (2023). ReWOO: Decoupling Reasoning from Observations for Efficient Augmented Language Models. *arXiv:2305.18323*.
+- Wei, J., et al. (2022). Chain-of-thought prompting elicits reasoning in large language models. *NeurIPS 2022*.
+- Wang, L., et al. (2023). Plan-and-Solve Prompting. *ACL 2023*.
