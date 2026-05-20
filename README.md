@@ -362,4 +362,154 @@ The cohort-produced handbook model is structurally novel enough that it will evo
 
 ---
 
+## What This Book Is
+
+*The case layer for INFO 7375, the patterns the cohort produced, and how to read this edition.*
+
+This is the Spring 2026 edition of *Design of Agentic Systems with Case Studies*. The theory spine — Chapters 1 through 14 — is the stable frame, with field-drift updates each edition as protocols, models, and tools shift under the field. The case layer — Chapters 15 through 45 — belongs to this semester's cohort. Thirty-one student-authored cases drawn from the Spring 2026 section of [INFO 7375 — Prompt Engineering for Generative AI](https://github.com/nikbearbrown) at Northeastern University. The course's fifth module — Agentic AI Systems — is the section the case layer is built around: agent architectures (ReAct, Reflexion, Chain-of-Thought), tool use and function calling, planning and reasoning, memory systems, multi-agent orchestration, agent evaluation, and the ethical considerations that come with autonomous systems. Every case in the layer instantiates at least one theory chapter from that module's territory.
+
+The structural bet is the same bet the book has made since the first edition: engineers learn agentic system design by reading documented real deployments rather than by constructing toy examples. Every case in this edition cleared the assignment gate (real deployed system or real phenomenon, all template sections present, sources primary and verifiable, design choices specific and attributable, failure mode named) and the editorial acceptance standard (writing tight, no theory restated, every contestable claim traceable). Cases that did not clear the editorial gate earned course credit and stayed out of the book.
+
+---
+
+## Who This Book Is For
+
+<!-- TODO: populate from chapter content -->
+
+---
+
+## How to Read It
+
+Each case is paired with the theory chapter(s) it instantiates via the case's "Pattern connection" section. Three reading paths fit the most common needs.
+
+If you are *evaluating whether to build agentic*, read Chapter 1, Chapter 9, and Chapter 11, then pick two or three system cases in domains close to yours from the case layer. CodeSentinel (Ch 15), CLIS V2 (Ch 32), and CloudArch Designer (Ch 33) are the cases that argue most directly about *when not to use an LLM* alongside *when to use one*.
+
+If you are *designing an agentic system*, read the theory spine in order with each case read alongside the chapter it instantiates. Chapter 7 (Hallucination) carries the highest case load — ten of the cohort's cases instantiate the Fact Check List Pattern at different scales. Chapter 12 (Choosing Your Weapon) is best read with Pitch Verdict, Pygmy, Jobzilla, and CodeSentinel together because the four cases stress different framework-correctness arguments.
+
+If you are *debugging a specific failure mode*, the pattern-case-shaped chapters cluster naturally: hallucination (Ch 7's enrichment plus Ch 16, 32, 41), context management (Ch 9's enrichment plus Ch 25), framework correctness (Ch 12's enrichment plus Ch 28, 33), attack surface (Ch 30's sandboxed Judge0 path), cost reasoning (Ch 29 CostSherlock's controlled rule-out vocabulary).
+
+Two cases are flagged for shape rather than maturity. **Thought2Do (Ch 43)** is documented at proposal stage; the architecture and evaluation framework are committed, the measured outcomes are not yet recorded. **The Adaptive Linear Algebra Explainer** appears as two parallel cases (Ch 36 and Ch 37) because the same architecture was deployed on different stacks (local Ollama vs hosted Groq) — read together they show what changes when only the inference backend differs.
+
+---
+
+## Table of Contents
+
+| Chapter | Title | File |
+|---------|-------|------|
+| Intro | Introduction — Spring 2026 Edition | [chapters/00-introduction.md](chapters/00-introduction.md) |
+| 0 | Preface | [chapters/00-preface.md](chapters/00-preface.md) |
+| 1 | Chapter 1 — The Move That Changed Everything | [chapters/01-move-that-changed-everything.md](chapters/01-move-that-changed-everything.md) |
+| 2 | Chapter 2 — The Blueprint Before the Build | [chapters/02-blueprint-before-the-build.md](chapters/02-blueprint-before-the-build.md) |
+| 3 | Chapter 3 — Five Patterns, Five Trade-offs | [chapters/03-five-patterns-five-tradeoffs.md](chapters/03-five-patterns-five-tradeoffs.md) |
+| 4 | Chapter 4 — RAG 101 | [chapters/04-rag-101.md](chapters/04-rag-101.md) |
+| 5 | Chapter 5 — Choosing and Configuring Your RAG Pipeline | [chapters/05-configuring-your-rag-pipeline.md](chapters/05-configuring-your-rag-pipeline.md) |
+| 6 | Chapter 6 — Grounding Agents in Evidence | [chapters/06-grounding-agents-in-evidence.md](chapters/06-grounding-agents-in-evidence.md) |
+| 7 | Chapter 7 — Hallucination: When Plausibility Beats Truth | [chapters/07-hallucination-plausibility-vs-truth.md](chapters/07-hallucination-plausibility-vs-truth.md) |
+| 8 | Chapter 8 — The Attack Surface No One Designed For | [chapters/08-attack-surface-no-one-designed-for.md](chapters/08-attack-surface-no-one-designed-for.md) |
+| 9 | Chapter 9 — Five Ways Context Kills Agents | [chapters/09-five-ways-context-kills-agents.md](chapters/09-five-ways-context-kills-agents.md) |
+| 10 | Chapter 10 — When Coordinated Agents Become Unpredictable | [chapters/10-coordinated-agents-emergence.md](chapters/10-coordinated-agents-emergence.md) |
+| 11 | Chapter 11 — Model Economics and the Build-or-Buy Decision | [chapters/11-model-economics.md](chapters/11-model-economics.md) |
+| 12 | Chapter 12 — Choosing Your Weapon | [chapters/12-choosing-your-weapon.md](chapters/12-choosing-your-weapon.md) |
+| 13 | Chapter 13 — The Protocol Layer: MCP, ACP, and the Interoperability Standard | [chapters/13-protocol-layer.md](chapters/13-protocol-layer.md) |
+| 14 | Chapter 14 — Twelve Production Builds: A Scaffolded Project Sequence | [chapters/14-twelve-production-builds.md](chapters/14-twelve-production-builds.md) |
+| 15 | Chapter 15 — Case: CodeSentinel | [chapters/15-case-codesentinel.md](chapters/15-case-codesentinel.md) |
+| 16 | Chapter 16 — Case: VerifAI | [chapters/16-case-verifai.md](chapters/16-case-verifai.md) |
+| 17 | Chapter 17 — Case: PharmGuard AI | [chapters/17-case-pharmguard.md](chapters/17-case-pharmguard.md) |
+| 18 | Chapter 18 — Case: BioClaim Guard | [chapters/18-case-bioclaim-guard.md](chapters/18-case-bioclaim-guard.md) |
+| 19 | Chapter 19 — Case: ClearDischarge | [chapters/19-case-cleardischarge.md](chapters/19-case-cleardischarge.md) |
+| 20 | Chapter 20 — Case: AIRA | [chapters/20-case-aira.md](chapters/20-case-aira.md) |
+| 21 | Chapter 21 — Case: CrisisLens | [chapters/21-case-crisislens.md](chapters/21-case-crisislens.md) |
+| 22 | Chapter 22 — Case: TrialMatch AI | [chapters/22-case-trialmatch.md](chapters/22-case-trialmatch.md) |
+| 23 | Chapter 23 — Case: PolicyLens | [chapters/23-case-policylens.md](chapters/23-case-policylens.md) |
+| 24 | Chapter 24 — Case: PlanLens | [chapters/24-case-planlens.md](chapters/24-case-planlens.md) |
+| 25 | Chapter 25 — Case: TacticalLens | [chapters/25-case-tacticallens.md](chapters/25-case-tacticallens.md) |
+| 26 | Chapter 26 — Case: Pitch Verdict | [chapters/26-case-pitch-verdict.md](chapters/26-case-pitch-verdict.md) |
+| 27 | Chapter 27 — Case: Pygmy | [chapters/27-case-pygmy.md](chapters/27-case-pygmy.md) |
+| 28 | Chapter 28 — Case: Jobzilla AI | [chapters/28-case-jobzilla.md](chapters/28-case-jobzilla.md) |
+| 29 | Chapter 29 — Case: CostSherlock | [chapters/29-case-costsherlock.md](chapters/29-case-costsherlock.md) |
+| 30 | Chapter 30 — Case: LitmusQE | [chapters/30-case-litmusqe.md](chapters/30-case-litmusqe.md) |
+| 31 | Chapter 31 — Case: SchemaGuard | [chapters/31-case-schemaguard.md](chapters/31-case-schemaguard.md) |
+| 32 | Chapter 32 — Case: CLIS V2 | [chapters/32-case-clis-v2.md](chapters/32-case-clis-v2.md) |
+| 33 | Chapter 33 — Case: CloudArch Designer | [chapters/33-case-cloudarch.md](chapters/33-case-cloudarch.md) |
+| 34 | Chapter 34 — Case: Personal Cybersecurity Guardian | [chapters/34-case-cybersecurity-guardian.md](chapters/34-case-cybersecurity-guardian.md) |
+| 35 | Chapter 35 — Case: Syllabus Navigator | [chapters/35-case-syllabus-navigator.md](chapters/35-case-syllabus-navigator.md) |
+| 36 | Chapter 36 — Case: Adaptive Linear Algebra Explainer (Faraz) | [chapters/36-case-adaptive-linalg-faraz.md](chapters/36-case-adaptive-linalg-faraz.md) |
+| 37 | Chapter 37 — Case: Adaptive Linear Algebra Explainer (Abdul) | [chapters/37-case-adaptive-linalg-abdul.md](chapters/37-case-adaptive-linalg-abdul.md) |
+| 38 | Chapter 38 — Case: AI-Powered Stock Research Platform | [chapters/38-case-stock-research.md](chapters/38-case-stock-research.md) |
+| 39 | Chapter 39 — Case: Immigrant Tax Filing Assistant | [chapters/39-case-immigrant-tax.md](chapters/39-case-immigrant-tax.md) |
+| 40 | Chapter 40 — Case: MindMirror | [chapters/40-case-mindmirror.md](chapters/40-case-mindmirror.md) |
+| 41 | Chapter 41 — Case: Research Claim Auditor | [chapters/41-case-research-claim-auditor.md](chapters/41-case-research-claim-auditor.md) |
+| 42 | Chapter 42 — Case: WCAG Compliance Auditor | [chapters/42-case-wcag-auditor.md](chapters/42-case-wcag-auditor.md) |
+| 43 | Chapter 43 — Case: Thought2Do | [chapters/43-case-thought2do.md](chapters/43-case-thought2do.md) |
+| 44 | Chapter 44 — Case: AI Financial Fragility Detector | [chapters/44-case-financial-fragility.md](chapters/44-case-financial-fragility.md) |
+| 45 | Chapter 45 — Case: StudyMate AI | [chapters/45-case-studymate.md](chapters/45-case-studymate.md) |
+| 1 | book-v1 — Design of Agentic Systems with Case Studies | [chapters/README.md](chapters/README.md) |
+
+---
+
+## Signature Simulations
+
+| Chapter | Topic | Simulation |
+|---------|-------|------------|
+| 15 | Chapter 15 | AI Wayback Machine |
+| 16 | Chapter 16 | AI Wayback Machine |
+| 17 | Chapter 17 | AI Wayback Machine |
+| 18 | Chapter 18 | AI Wayback Machine |
+| 19 | Chapter 19 | AI Wayback Machine |
+| 20 | Chapter 20 | AI Wayback Machine |
+| 21 | Chapter 21 | AI Wayback Machine |
+| 22 | Chapter 22 | AI Wayback Machine |
+| 23 | Chapter 23 | AI Wayback Machine |
+| 24 | Chapter 24 | AI Wayback Machine |
+| 25 | Chapter 25 | AI Wayback Machine |
+| 26 | Chapter 26 | AI Wayback Machine |
+| 27 | Chapter 27 | AI Wayback Machine |
+| 28 | Chapter 28 | AI Wayback Machine |
+| 29 | Chapter 29 | AI Wayback Machine |
+| 30 | Chapter 30 | AI Wayback Machine |
+| 31 | Chapter 31 | AI Wayback Machine |
+| 32 | Chapter 32 | AI Wayback Machine |
+| 33 | Chapter 33 | AI Wayback Machine |
+| 34 | Chapter 34 | AI Wayback Machine |
+| 35 | Chapter 35 | AI Wayback Machine |
+| 36 | Chapter 36 | AI Wayback Machine |
+| 37 | Chapter 37 | AI Wayback Machine |
+| 38 | Chapter 38 | AI Wayback Machine |
+| 39 | Chapter 39 | AI Wayback Machine |
+| 40 | Chapter 40 | AI Wayback Machine |
+| 41 | Chapter 41 | AI Wayback Machine |
+| 42 | Chapter 42 | AI Wayback Machine |
+| 43 | Chapter 43 | AI Wayback Machine |
+| 44 | Chapter 44 | AI Wayback Machine |
+| 45 | Chapter 45 | AI Wayback Machine |
+
+---
+
+## About the Author
+
+**Nik Bear Brown** is an Associate Teaching Professor at Northeastern University's College of Engineering. He is the founder of [Humanitarians AI](https://www.humanitarians.ai/) — the 501(c)(3) under whose umbrella the case studies in this volume were developed — and the author of the *with LLMs* textbook series.
+
+He is also the architect of the **Brutalist** AI-assisted production framework, whose renderer modules (D3, After Effects, Blender, Remotion) operate under the same agent-orchestration principles examined here. The framework lives at [brutalist.art](https://www.brutalist.art/).
+
+He works in Boston. [nikbearbrown.com](https://www.nikbearbrown.com) · [irreducibly.xyz](https://irreducibly.xyz) · [skepticism.ai](https://www.skepticism.ai)
+
+---
+
+## Copyright
+
+Copyright © 2026 Nik Bear Brown. All rights reserved.
+
+Published by Bear Brown, LLC.
+
+No part of this publication may be reproduced, distributed, or transmitted in
+any form or by any means without the prior written permission of the publisher,
+except in the case of brief quotations in critical reviews and certain other
+noncommercial uses permitted by copyright law.
+
+ISBN: [INSERT ISBN]
+
+First edition: 2026
+
+---
+
 *Spring 2026*
