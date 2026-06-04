@@ -1,0 +1,36 @@
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Three-component architecture of AlphaGo </title>
+  <desc id="desc">three-component architecture of AlphaGo — policy network (input: board → output: move probabilities), value network (input: board → output: win probab</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#2a1a0e"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="700" height="420" fill="#FFFFFF"/>
+  <text x="32" y="42" font-family="'EB Garamond', Georgia, 'Times New Roman', serif" font-size="13" font-weight="bold" fill="#2a1a0e">Three-component architecture of AlphaGo </text>
+  <text x="32" y="62" font-family="'EB Garamond', Georgia, 'Times New Roman', serif" font-size="10" fill="#545454">three-component architecture of AlphaGo — policy network (input: board → output: move probabilities), value network (input: board → output: win probab</text>
+  <rect x="64" y="92" width="572" height="252" fill="#F5EFE8" stroke="#D4D4D4" stroke-width="0.75"/>
+  <line x1="145" y1="180" x2="190" y2="135" stroke="#2a1a0e" stroke-width="1"/>
+  <line x1="190" y1="135" x2="226" y2="205" stroke="#2a1a0e" stroke-width="1"/>
+  <line x1="226" y1="205" x2="176" y2="242" stroke="#2a1a0e" stroke-width="1"/>
+  <line x1="176" y1="242" x2="145" y2="180" stroke="#2a1a0e" stroke-width="1"/>
+  <line x1="145" y1="180" x2="226" y2="205" stroke="#2a1a0e" stroke-width="1"/>
+  <line x1="468" y1="150" x2="520" y2="196" stroke="#2a1a0e" stroke-width="1"/>
+  <line x1="520" y1="196" x2="466" y2="250" stroke="#2a1a0e" stroke-width="1"/>
+  <line x1="466" y1="250" x2="560" y2="254" stroke="#2a1a0e" stroke-width="1"/>
+  <line x1="468" y1="150" x2="466" y2="250" stroke="#2a1a0e" stroke-width="1"/>
+  <line x1="226" y1="205" x2="350" y2="206" stroke="#C8102E" stroke-width="2"/>
+  <line x1="350" y1="206" x2="468" y2="150" stroke="#C8102E" stroke-width="2"/>
+  <circle cx="145" cy="180" r="10" fill="#6B3520" stroke="#FFFFFF" stroke-width="2"/>
+  <circle cx="190" cy="135" r="10" fill="#6B3520" stroke="#FFFFFF" stroke-width="2"/>
+  <circle cx="226" cy="205" r="10" fill="#6B3520" stroke="#FFFFFF" stroke-width="2"/>
+  <circle cx="176" cy="242" r="10" fill="#6B3520" stroke="#FFFFFF" stroke-width="2"/>
+  <circle cx="468" cy="150" r="10" fill="#6B3520" stroke="#FFFFFF" stroke-width="2"/>
+  <circle cx="520" cy="196" r="10" fill="#6B3520" stroke="#FFFFFF" stroke-width="2"/>
+  <circle cx="466" cy="250" r="10" fill="#6B3520" stroke="#FFFFFF" stroke-width="2"/>
+  <circle cx="560" cy="254" r="10" fill="#6B3520" stroke="#FFFFFF" stroke-width="2"/>
+  <circle cx="350" cy="206" r="13" fill="#C8102E" stroke="#FFFFFF" stroke-width="2"/>
+  <text x="168" y="304" text-anchor="middle" font-family="'IBM Plex Mono', 'Courier New', monospace" font-size="10" letter-spacing="0.08em" fill="#545454">CLUSTER A</text>
+  <text x="504" y="304" text-anchor="middle" font-family="'IBM Plex Mono', 'Courier New', monospace" font-size="10" letter-spacing="0.08em" fill="#545454">CLUSTER B</text>
+  <text x="350" y="332" text-anchor="middle" font-family="'EB Garamond', Georgia, 'Times New Roman', serif" font-size="11" fill="#2a1a0e">The emphasized bridge shows the structural relation named in the prompt.</text>
+</svg>
