@@ -64,6 +64,10 @@ The rule: use the model to generate adversarial test cases; verify code safety a
 
 **Barbara Liskov** was pioneered data abstraction and type-safe software design — the Liskov substitution principle anchors modern static analysis.
 
+![Barbara Liskov](../images/barbara-liskov-1vp.png)
+
+*Puppet Art by [Nik Bear Brown](https://www.nikbearbrown.com/).*
+
 **Run this:**
 
 ```

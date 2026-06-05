@@ -127,6 +127,10 @@ Any remaining errors are mine. If you find one, I want to hear about it — ther
 
 **Margaret Hamilton** was led the Apollo Guidance Computer software team — coining "software engineering" and pioneering reliable autonomous control software.
 
+![Margaret Hamilton](../images/margaret-hamilton-ees.png)
+
+*Puppet Art by [Nik Bear Brown](https://www.nikbearbrown.com/).*
+
 **Run this:**
 
 ```

@@ -81,6 +81,10 @@ The rule: failure-mode catalog from the model; compatibility check against the a
 
 **Edgar F. Codd** was invented the relational data model in 1970 — defining the constraints and normalization rules that modern schema validation still uses.
 
+![Edgar F. Codd](../images/edgar-f-codd-cqi.png)
+
+*Puppet Art by [Nik Bear Brown](https://www.nikbearbrown.com/).*
+
 **Run this:**
 
 ```

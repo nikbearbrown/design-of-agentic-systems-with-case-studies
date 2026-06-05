@@ -66,6 +66,10 @@ The rule: criterion mapping from the model; certification from accessibility tes
 
 **Vint Cerf** was helped make accessibility a first-class concern in internet protocol design — he wore hearing aids and is partially deaf.
 
+![Vint Cerf](../images/vint-cerf-6sv.png)
+
+*Puppet Art by [Nik Bear Brown](https://www.nikbearbrown.com/).*
+
 **Run this:**
 
 ```

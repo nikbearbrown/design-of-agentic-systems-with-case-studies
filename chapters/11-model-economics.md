@@ -135,6 +135,10 @@ The rule: economics is empirical and the empirics are yours.
 
 **William Nordhaus** was Nobel-winning economist whose work on the economics of computation and energy frames how to think about per-token costs.
 
+![William Nordhaus](../images/william-nordhaus-410.png)
+
+*Puppet Art by [Nik Bear Brown](https://www.nikbearbrown.com/).*
+
 **Run this:**
 
 ```

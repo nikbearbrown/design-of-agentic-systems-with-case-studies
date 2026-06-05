@@ -140,6 +140,10 @@ The rule: structured comparison from the model; choice from your criteria.
 
 **Frederick Brooks** was wrote The Mythical Man-Month (1975) — the founding meditation on choosing the right tool for the right software job.
 
+![Frederick Brooks](../images/frederick-brooks-cn9.png)
+
+*Puppet Art by [Nik Bear Brown](https://www.nikbearbrown.com/).*
+
 **Run this:**
 
 ```

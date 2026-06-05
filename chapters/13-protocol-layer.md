@@ -133,6 +133,10 @@ The rule: the model audits the protocol; you write it.
 
 **Vint Cerf** was co-designed TCP/IP — the protocol layer that defines the modern internet and the conceptual ancestor of agent protocol design.
 
+![Vint Cerf](../images/vint-cerf-6sv.png)
+
+*Puppet Art by [Nik Bear Brown](https://www.nikbearbrown.com/).*
+
 **Run this:**
 
 ```

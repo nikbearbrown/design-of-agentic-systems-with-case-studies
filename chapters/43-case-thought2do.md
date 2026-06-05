@@ -72,6 +72,10 @@ The rule: pattern surfacing from the model; the conversion to action from you.
 
 **David Allen** was wrote Getting Things Done in 2001 — the system of capturing thoughts into action items that productivity tools still implement.
 
+![David Allen](../images/allen-newell-233.png)
+
+*Puppet Art by [Nik Bear Brown](https://www.nikbearbrown.com/).*
+
 **Run this:**
 
 ```

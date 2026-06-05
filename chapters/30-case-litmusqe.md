@@ -84,6 +84,10 @@ The rule: test design from the model; pass/fail from test execution.
 
 **W. Edwards Deming** was statistician who built the modern theory of quality engineering — the framework underlies every serious QA system in software and manufacturing.
 
+![W. Edwards Deming](../images/w-edwards-deming-efb.png)
+
+*Puppet Art by [Nik Bear Brown](https://www.nikbearbrown.com/).*
+
 **Run this:**
 
 ```
