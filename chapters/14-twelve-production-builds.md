@@ -206,6 +206,10 @@ The rule: production is a property of running systems; the checking happens in p
 
 **Grace Hopper** was wrote the first compiler (A-0) in 1952 — and pioneered the discipline of moving software from research prototype to production.
 
+![Grace Hopper](../images/grace-hopper-w8h.png)
+
+*Puppet Art by [Nik Bear Brown](https://www.nikbearbrown.com/).*
+
 **Run this:**
 
 ```

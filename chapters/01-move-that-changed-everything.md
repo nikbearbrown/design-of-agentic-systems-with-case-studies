@@ -28,7 +28,8 @@ In 1997, IBM's Deep Blue beat Garry Kasparov in chess. The architecture was unde
 
 This worked because chess is deep but narrow. From a typical position you have about thirty-five legal moves — what's called the *branching factor* — and the evaluation function, worked out by generations of grandmasters, is actually pretty good. Material advantage really is a decent proxy for winning. Deep Blue could search a few dozen ply ahead, score the leaves, and outplay any human alive.
 
-<!-- → [INFOGRAPHIC: side-by-side comparison of chess vs. Go on the two failure axes — branching factor (35 vs. 250) and evaluation function (writable vs. not writable); the visual should make the "two problems, not one" structure of the Go challenge immediately legible] -->
+![Comparison of chess vs](images/01-move-that-changed-everything-fig-01.png)
+*Figure 1.1 — Comparison of chess vs*
 
 Now look at Go. Go is played on a 19×19 board; each move places a stone on an empty intersection. Early in the game you have close to 361 legal moves — every intersection. Even later, the branching factor averages around 250.
 
@@ -42,7 +43,8 @@ The design choice hidden in this problem is the move I want you to see clearly, 
 
 AlphaGo is three things stacked together. A policy network, a value network, and Monte Carlo Tree Search. I want to walk through each, because the machinery matters for what comes next.
 
-<!-- → [DIAGRAM: three-component architecture of AlphaGo — policy network (input: board → output: move probabilities), value network (input: board → output: win probability 0–1), and MCTS (uses both to guide search); show data flow between the three, with a callout indicating that MCTS is what "ties them together" at decision time] -->
+![Three-component architecture of AlphaGo ](images/01-move-that-changed-everything-fig-02.png)
+*Figure 1.2 — Three-component architecture of AlphaGo *
 
 The policy network is a neural network — that is, a function with millions of adjustable numbers inside, tuned by an optimization algorithm to reproduce examples it has been shown — that takes a Go board as input and outputs a probability for every legal move. *If I were going to play here, move A has a 23% chance of being the right move, move B has 18%, move C has 11%.* It does not score moves as good or bad. It only narrows the field.
 
@@ -108,7 +110,11 @@ Go is, structurally, the *easiest* domain in which non-reconstructible correct r
 
 The objective was cheap to specify. *Win the game* is a function of board state at termination; you write it down in one line, and there is no ambiguity about whether it was achieved. The environment was sealed: a stone placed at D17 did not also change the weather, make someone lose their job, or commit a resource that could not be recovered. Moves were locally atomic — a Go stone interacts with its neighbors through rules the game makes explicit, with no hidden channels through which one stone affects another. Ground truth arrived: every game terminates within hours and you know who won. And self-play was free: AlphaGo's strength came from millions of games against copies of itself, with no patients harmed, no markets moved, no clients misrepresented.
 
-<!-- → [TABLE: the five safety properties of Go — rows: cheap objective specification, sealed environment, locally atomic actions, ground truth arrives, self-play is free; columns: the Go case (what made it true) and the agentic deployment case (what makes it false); student should see this as the structural argument for why Move 37 doesn't license confidence in harder domains] -->
+| the Go case (what made it true) | the agentic deployment case (what makes it false) |
+| --- | --- |
+| cheap objective specification, sealed environment, locally atomic actions, ground truth arrives, self-play is free | A concrete checkpoint for applying the chapter concept. |
+| columns: the Go case (what made it true) and the agentic deployment case (what makes it false | A concrete checkpoint for applying the chapter concept. |
+| student should see this as the structural argument for why Move 37 doesn't license confidence in harder domains | It makes the underlying reasoning visible instead of implied. |
 
 Cluster these and three families fall out. The objective: cheap to specify. The action footprint: bounded and declared. The feedback: arrives, cheaply, on a useful timescale. Every one of those families fails in the deployments I am going to walk through later. *Help the patient* is not a function you can write down. *Send the email* has consequences in systems the agent doesn't observe. *Was the legal strategy correct* is judged years downstream by communities the agent doesn't model.
 
@@ -185,7 +191,6 @@ The rule: the model is a narrative stress-tester, not a narrative author.
 
 **10.** The chapter defines "alien intelligence" strictly as a claim about the geometry of solution spaces and whether that geometry is humanly representable in the operational sense — explicitly not a claim about consciousness. Stress-test this definition. Construct a case where a system's output is globally navigable by humans and yet we might still want to call it "alien." Then construct a case where a system's output is globally non-navigable and yet we might not. Does the chapter's definition do the work the book needs it to do, or is it drawing the boundary in the wrong place?
 *(Tests: stress-testing the chapter's central definition against edge cases it does not address; requires the student to reason about the definition's purpose, not just its content)*
-
 
 ---
 

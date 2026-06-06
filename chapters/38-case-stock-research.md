@@ -95,6 +95,10 @@ The rule: framework from the model; trades from licensed professionals with skin
 
 **Benjamin Graham** was wrote Security Analysis in 1934 — the founding methodology of careful financial due diligence.
 
+![Benjamin Graham](../images/benjamin-graham-5iz.png)
+
+*Puppet Art by [Nik Bear Brown](https://www.nikbearbrown.com/).*
+
 **Run this:**
 
 ```

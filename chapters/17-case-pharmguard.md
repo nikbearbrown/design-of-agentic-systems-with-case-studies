@@ -70,6 +70,10 @@ The rule: regulatory category from the model; the safety call from a pharmacist 
 
 **Frances Oldham Kelsey** was FDA reviewer who refused to approve thalidomide in 1960 — establishing the discipline of skeptical pharmaceutical safety review.
 
+![Frances Oldham Kelsey](../images/frances-oldham-kelsey-ooa.png)
+
+*Puppet Art by [Nik Bear Brown](https://www.nikbearbrown.com/).*
+
 **Run this:**
 
 ```

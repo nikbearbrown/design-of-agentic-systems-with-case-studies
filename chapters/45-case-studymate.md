@@ -84,6 +84,10 @@ The rule: drills from the model; the working belongs to the student.
 
 **Marie Montessori** was physician and educator whose method shaped the design of self-directed learning environments — the conceptual ancestor of modern study assistants.
 
+![Marie Montessori](../images/maria-montessori-b57.png)
+
+*Puppet Art by [Nik Bear Brown](https://www.nikbearbrown.com/).*
+
 **Run this:**
 
 ```

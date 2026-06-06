@@ -64,6 +64,10 @@ The rule: scope tightly; advertise the scope, not the architecture.
 
 **Mary Allen Wilkes** was programmed the LINC at MIT in 1965 and operated it from her parents' living room — the first programmer of what we would call a personal computer.
 
+![Mary Allen Wilkes](../images/mary-allen-wilkes-6is.png)
+
+*Puppet Art by [Nik Bear Brown](https://www.nikbearbrown.com/).*
+
 **Run this:**
 
 ```

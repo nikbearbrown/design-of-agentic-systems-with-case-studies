@@ -1,22 +1,4 @@
-<!--
-    00-frontmatter.md
-    FRONT MATTER — everything that appears before Chapter 1.
-
-    Four sections in order:
-      1. Title page
-      2. Copyright page
-      3. Dedication (optional — delete if not using)
-      4. Preface
-
-    Do not number these sections. They use roman numerals in print
-    and appear before the body in the compiled EPUB.
-
-    The Preface does different work than the Introduction:
-      - Preface  = author's voice; why the book exists, why you wrote it
-      - Introduction = reader's roadmap; what the book argues, how it is organized
--->
-
-# The Design of Agentic Systems: with Case Studies
+# Design of Agentic Systems with Case Studies
 
 **Nik Bear Brown**
 
@@ -28,10 +10,7 @@ Copyright © 2026 Nik Bear Brown. All rights reserved.
 
 Published by Bear Brown, LLC.
 
-No part of this publication may be reproduced, distributed, or transmitted in
-any form or by any means without the prior written permission of the publisher,
-except in the case of brief quotations in critical reviews and certain other
-noncommercial uses permitted by copyright law.
+No part of this publication may be reproduced, distributed, or transmitted in any form or by any means without the prior written permission of the publisher, except in the case of brief quotations in critical reviews and certain other noncommercial uses permitted by copyright law.
 
 ISBN: [INSERT ISBN]
 
@@ -41,28 +20,14 @@ First edition: 2026
 
 ## Dedication
 
-<!-- Optional. Delete this section if not using. -->
-
-*[For — ]*
+*[For the learners who keep asking better questions.]*
 
 ---
 
 ## Preface
 
-<!-- The preface is written in the author's voice.
-     It answers three questions:
-       - Why does this book exist? (the gap it fills)
-       - Why now? (what changed that makes this urgent)
-       - Why you? (what credentials or experience qualify you to write it)
-     It is NOT a summary of the book — that belongs in the Introduction.
-     Typical length: 2–5 pages. -->
+This book exists because Design of Agentic Systems with Case Studies needs a usable path for readers who want more than fragments, prompts, or disconnected explanations. It was written to gather the field into a sequence: first the core ideas, then the working vocabulary, then the cases and practices that make the ideas durable.
 
-[PREFACE PLACEHOLDER]
+The urgency is practical. Learners now meet every subject through search engines, AI systems, dashboards, tutorials, and partial answers. That abundance helps, but it also creates a new problem: it is easy to collect explanations without building judgment. This book is meant to slow the reader down just enough to see the structure of the subject.
 
-<!-- Suggested elements:
-     - The moment or problem that prompted this book
-     - What the book argues that hasn't been said before
-     - Who it is written for
-     - Any biographical context that establishes credibility
-     - Brief acknowledgment of what the book does NOT cover
--->
+The authorial stance is applied and instructional. The goal is not to be encyclopedic. The goal is to give readers enough language, examples, and order that they can continue learning with better questions.

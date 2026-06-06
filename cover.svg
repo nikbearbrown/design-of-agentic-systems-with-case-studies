@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 2560" width="1600" height="2560" preserveAspectRatio="xMidYMid meet" shape-rendering="geometricPrecision">
+  <g id="background"><rect x="0" y="0" width="1600" height="2560" fill="#1B6B5A"/></g>
+  <g id="symbol-fragments" transform="rotate(5, 800, 830)">
+    <polygon points="278,1410 350,1423 337,1554 267,1547" fill="#F5F0E8"/>
+    <polygon points="517,205 747,227 735,317 509,307" fill="#F5F0E8"/>
+    <polygon points="664,190 895,207 873,304 653,285" fill="#F5F0E8"/>
+    <polygon points="222,216 441,225 429,355 212,343" fill="#F5F0E8"/>
+    <polygon points="304,1399 458,1409 454,1546 296,1546" fill="#F5F0E8"/>
+    <polygon points="1031,189 1165,197 1153,310 1028,301" fill="#F5F0E8"/>
+    <polygon points="529,233 657,253 644,365 520,360" fill="#F5C518"/>
+  </g>
+  <g id="title-letterforms">
+    <text x="120" y="1370" font-family="Arial Black, Arial, sans-serif" font-size="170" font-weight="900" letter-spacing="0" fill="#F5F0E8" textLength="1300" lengthAdjust="spacingAndGlyphs">DESIGN OF</text>
+    <text x="120" y="1545" font-family="Arial Black, Arial, sans-serif" font-size="170" font-weight="900" letter-spacing="0" fill="#F5C518">AGENTIC</text>
+    <text x="120" y="1720" font-family="Arial Black, Arial, sans-serif" font-size="170" font-weight="900" letter-spacing="0" fill="#F5F0E8">SYSTEMS</text>
+    <text x="120" y="1895" font-family="Arial Black, Arial, sans-serif" font-size="170" font-weight="900" letter-spacing="0" fill="#F5F0E8" textLength="1300" lengthAdjust="spacingAndGlyphs">WITH CASE</text>
+    <text x="120" y="2070" font-family="Arial Black, Arial, sans-serif" font-size="170" font-weight="900" letter-spacing="0" fill="#F5F0E8">STUDIES</text>
+  </g>
+</svg>

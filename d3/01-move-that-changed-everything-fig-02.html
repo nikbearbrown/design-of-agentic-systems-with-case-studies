@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Three-component architecture of AlphaGo </title>
+  <style>
+    :root {
+      --color-white: #FFFFFF;
+      --color-fill: #F5EFE8;
+      --color-ink: #2a1a0e;
+      --color-mark: #6B3520;
+      --color-red: #C8102E;
+      --color-slate: #1A3A5C;
+      --color-ochre: #C8860E;
+      --color-secondary: #545454;
+      --color-border: #D4D4D4;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-white: #111111;
+        --color-fill: #1d1a17;
+        --color-ink: #F0EBE3;
+        --color-mark: #B7795F;
+        --color-red: #E8243A;
+        --color-slate: #8FAED0;
+        --color-ochre: #D49A30;
+        --color-secondary: #A0978C;
+        --color-border: #2E2E2E;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { min-height: 100vh; background: var(--color-white); color: var(--color-ink); font-family: 'EB Garamond', Georgia, serif; }
+    #chart { width: 100vw; height: 100vh; }
+    .title { font-family: 'EB Garamond', Georgia, serif; font-weight: 700; fill: var(--color-ink); }
+    .body-label { font-family: 'EB Garamond', Georgia, serif; fill: var(--color-ink); }
+    .mono-label, .tick text { font-family: 'IBM Plex Mono', 'JetBrains Mono', monospace; letter-spacing: 0.08em; fill: var(--color-secondary); }
+    .axis path, .axis line { stroke: var(--color-ink); }
+    .gridline line { stroke: var(--color-border); stroke-dasharray: 4 3; }
+    .tooltip { position: absolute; pointer-events: none; opacity: 0; background: var(--color-slate); color: var(--color-white); border: 1px solid var(--color-border); padding: 8px 10px; font-family: 'IBM Plex Mono', 'JetBrains Mono', monospace; font-size: 12px; }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  </style>
+</head>
+<body>
+  <div id="chart" role="main"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+  <script>
+    const barData = [{"label":"A","value":72},{"label":"B","value":55},{"label":"C","value":44},{"label":"D","value":31},{"label":"E","value":18}];
+    const chartTitle = "Three-component architecture of AlphaGo ";
+    const chartDesc = "three-component architecture of AlphaGo — policy network (input: board → output: move probabilities), value network (input: board → output: win probability 0–1), and MCTS (uses both to guide search); show data flow between the three, with a";
+    const tooltip = d3.select('body').append('div').attr('class', 'tooltip');
+    function draw() {
+      d3.select('#chart').selectAll('*').remove();
+      const container = document.getElementById('chart');
+      const totalWidth = container.clientWidth || 800;
+      const totalHeight = container.clientHeight || 500;
+      const margin = { top: 72, right: 40, bottom: 64, left: 72 };
+      const chartWidth = totalWidth - margin.left - margin.right;
+      const chartHeight = totalHeight - margin.top - margin.bottom;
+      const svg = d3.select('#chart').append('svg')
+        .attr('width', totalWidth)
+        .attr('height', totalHeight)
+        .attr('role', 'img')
+        .attr('aria-labelledby', 'chart-title chart-desc');
+      svg.append('title').attr('id', 'chart-title').text(chartTitle);
+      svg.append('desc').attr('id', 'chart-desc').text(chartDesc);
+      svg.append('text').attr('class', 'title').attr('x', 32).attr('y', 36).attr('font-size', 18).text(chartTitle);
+      svg.append('text').attr('class', 'body-label').attr('x', 32).attr('y', 58).attr('font-size', 13).text(chartDesc.slice(0, 110));
+      const gChart = svg.append('g').attr('class', 'g-chart').attr('transform', `translate(${margin.left},${margin.top})`);
+      gChart.append('rect').attr('width', chartWidth).attr('height', chartHeight).attr('fill', 'var(--color-fill)').attr('stroke', 'var(--color-border)');
+      const xScaleBand = d3.scaleBand().domain(barData.map(d => d.label)).rangeRound([24, chartWidth - 24]).padding(0.24);
+      const yScaleLinear = d3.scaleLinear().domain([0, d3.max(barData, d => d.value)]).nice().range([chartHeight - 28, 20]);
+      const yAxis = d3.axisLeft(yScaleLinear).ticks(5).tickSize(-(chartWidth - 48));
+      gChart.append('g').attr('class', 'gridline axis').attr('transform', 'translate(24,0)').call(yAxis).call(g => g.select('.domain').remove());
+      gChart.selectAll('.bar-rect')
+        .data(barData, d => d.label)
+        .join('rect')
+        .attr('class', 'bar-rect')
+        .attr('x', d => xScaleBand(d.label))
+        .attr('y', d => yScaleLinear(d.value))
+        .attr('width', xScaleBand.bandwidth())
+        .attr('height', d => chartHeight - 28 - yScaleLinear(d.value))
+        .attr('fill', (d, i) => i === 0 ? 'var(--color-red)' : 'var(--color-mark)')
+        .on('mouseover', (event, d) => {
+          tooltip.html(`${d.label}: ${d.value}`).style('left', (event.pageX + 12) + 'px').style('top', (event.pageY - 28) + 'px').style('opacity', 1);
+        })
+        .on('mousemove', event => tooltip.style('left', (event.pageX + 12) + 'px').style('top', (event.pageY - 28) + 'px'))
+        .on('mouseout', () => tooltip.style('opacity', 0));
+      gChart.selectAll('.value-label')
+        .data(barData, d => d.label)
+        .join('text')
+        .attr('class', 'body-label')
+        .attr('x', d => xScaleBand(d.label) + xScaleBand.bandwidth() / 2)
+        .attr('y', d => yScaleLinear(d.value) - 8)
+        .attr('text-anchor', 'middle')
+        .attr('font-size', 12)
+        .text(d => d.value);
+      gChart.append('g').attr('class', 'axis').attr('transform', `translate(0,${chartHeight - 28})`).call(d3.axisBottom(xScaleBand).tickSizeOuter(0));
+      gChart.append('text').attr('class', 'mono-label').attr('x', chartWidth - 24).attr('y', chartHeight + 18).attr('text-anchor', 'end').attr('font-size', 10).text('ILLUSTRATIVE STRUCTURE');
+    }
+    draw();
+    const resizeObserver = new ResizeObserver(() => draw());
+    resizeObserver.observe(document.getElementById('chart'));
+  </script>
+</body>
+</html>

@@ -81,6 +81,10 @@ The rule: scaffolding from the model; the work belongs to the student.
 
 **James Wilkinson** was numerical analyst who built much of the foundation of modern adaptive linear algebra — error analysis, backward stability, iterative solvers.
 
+![James Wilkinson](../images/james-wilkinson-5md.png)
+
+*Puppet Art by [Nik Bear Brown](https://www.nikbearbrown.com/).*
+
 **Run this:**
 
 ```
