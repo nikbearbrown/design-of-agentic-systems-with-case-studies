@@ -1,0 +1,51 @@
+<svg viewBox="0 0 1000 560" xmlns="http://www.w3.org/2000/svg" font-family="'DejaVu Sans','Helvetica Neue',Arial,sans-serif">
+  <rect width="1000" height="560" fill="#ffffff"/>
+
+  <text x="500" y="40" text-anchor="middle" font-size="27" font-weight="700" fill="#1a1a1a">The honest decomposition of a 97% drop in false positives</text>
+  <text x="500" y="67" text-anchor="middle" font-size="16" font-style="italic" fill="#6b6b6b">The raw before/after is 30 → 1; a prompt-iterated baseline separates architecture from careful prompting.</text>
+
+  <!-- axis -->
+  <line x1="150" y1="120" x2="150" y2="470" stroke="#9a9a9a" stroke-width="2"/>
+  <line x1="150" y1="470" x2="700" y2="470" stroke="#9a9a9a" stroke-width="2"/>
+  <text x="92" y="300" text-anchor="middle" font-size="14" fill="#6b6b6b" transform="rotate(-90 92 300)">false positives (10-sample suite)</text>
+
+  <!-- guide lines -->
+  <line x1="150" y1="152" x2="690" y2="152" stroke="#cccccc" stroke-width="1" stroke-dasharray="4 4"/>
+  <line x1="150" y1="343" x2="690" y2="343" stroke="#cccccc" stroke-width="1" stroke-dasharray="4 4"/>
+  <line x1="150" y1="459" x2="690" y2="459" stroke="#cccccc" stroke-width="1" stroke-dasharray="4 4"/>
+
+  <!-- Bar 1: 30 (out-of-box) -->
+  <rect x="185" y="152" width="105" height="318" fill="#ecd0d0" stroke="#a83838" stroke-width="2"/>
+  <text x="237" y="143" text-anchor="middle" font-size="22" font-weight="700" fill="#8f2a2a">30</text>
+  <text x="237" y="492" text-anchor="middle" font-size="13.5" font-weight="700" fill="#222">Single prompt</text>
+  <text x="237" y="510" text-anchor="middle" font-size="12" fill="#555">out-of-the-box</text>
+  <text x="237" y="526" text-anchor="middle" font-size="11" fill="#777">FPR 0.789</text>
+
+  <!-- Bar 2: 12 (prompt-iterated) -->
+  <rect x="345" y="343" width="105" height="127" fill="#f1e4c4" stroke="#b08a2e" stroke-width="2"/>
+  <text x="397" y="334" text-anchor="middle" font-size="22" font-weight="700" fill="#7a5e16">12</text>
+  <text x="397" y="492" text-anchor="middle" font-size="13.5" font-weight="700" fill="#222">Single prompt</text>
+  <text x="397" y="510" text-anchor="middle" font-size="12" fill="#555">3-round iterated</text>
+  <text x="397" y="526" text-anchor="middle" font-size="11" fill="#777">FPR 0.600</text>
+
+  <!-- Bar 3: 1 (multi-agent) -->
+  <rect x="505" y="459" width="105" height="11" fill="#d4e6db" stroke="#2f6a4a" stroke-width="2"/>
+  <text x="557" y="450" text-anchor="middle" font-size="22" font-weight="700" fill="#1f5e3a">1</text>
+  <text x="557" y="492" text-anchor="middle" font-size="13.5" font-weight="700" fill="#222">Multi-agent</text>
+  <text x="557" y="510" text-anchor="middle" font-size="12" fill="#555">CodeSentinel</text>
+  <text x="557" y="526" text-anchor="middle" font-size="11" fill="#777">FPR 0.111</text>
+
+  <!-- Bracket A: 30 -> 12 (prompt engineering) -->
+  <path d="M712 152 H736 V343 H712" fill="none" stroke="#b08a2e" stroke-width="2"/>
+  <text x="748" y="235" font-size="14" font-weight="700" fill="#7a5e16">−18 FP  ≈ 60%</text>
+  <text x="748" y="256" font-size="12.5" fill="#555">replicable prompt</text>
+  <text x="748" y="273" font-size="12.5" fill="#555">engineering</text>
+
+  <!-- Bracket B: 12 -> 1 (architecture) -->
+  <path d="M712 343 H736 V459 H712" fill="none" stroke="#2f6a4a" stroke-width="2"/>
+  <text x="748" y="397" font-size="14" font-weight="700" fill="#1f5e3a">−11 FP  ≈ 40%</text>
+  <text x="748" y="418" font-size="12.5" fill="#555">the architecture</text>
+
+  <!-- footnote -->
+  <text x="150" y="548" font-size="12" fill="#6b6b6b">All three: recall (TPR) = 1.000 · CWE classification = 1.000.  Real Claude Sonnet, same prompts, same samples · 20 Apr 2026.</text>
+</svg>
