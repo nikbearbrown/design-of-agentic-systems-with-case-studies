@@ -15,9 +15,11 @@ The journalist caught the error because she happened to re-read the output befor
 
 That asymmetry — between how often the system fails and how often the failures get caught — is the architectural problem this chapter is about. A newsroom producing three hundred versioned stories per week at a three percent deviation rate generates nine errors weekly. Most will not be caught before publication. The ones that are caught arrive as complaints, corrections, and credibility damage.
 
+![Figure 6.1 — The detection asymmetry. At a 3% deviation rate on 300 weekly stories, nine errors occur — but most ship before anyone re-reads the output. The asymmetry is structural, not a matter of diligence.](../images/fig-6-1-detection-asymmetry.png)
+
 (I should say up front that the Tuesday vignette is a representative scenario, constructed to demonstrate the failure mode. The Reyes quote I work through later is constructed in the same register. The architecture is real.)
 
-This is the problem Magid — a 70-year-old consumer-intelligence and strategy firm — set out to solve with a tool called Collaborator Newsroom. The architectural decision that made it work was not a better model, a better prompt, or a better retrieval algorithm. It was the decision to treat RAG not as a search optimization but as an *epistemological constraint*: a system-level guarantee that every claim in the output is traceable to a specific passage in the journalist's source material, and that deviations are detectable, measurable, and flaggable in real time.
+This is the problem Magid — a 70-year-old consumer-intelligence and strategy firm — set out to solve with a tool called [Collaborator Newsroom](https://magid.com/products/collaborator-ai-newsrooms/). The architectural decision that made it work was not a better model, a better prompt, or a better retrieval algorithm. It was the decision to treat RAG not as a search optimization but as an *epistemological constraint*: a system-level guarantee that every claim in the output is traceable to a specific passage in the journalist's source material, and that deviations are detectable, measurable, and flaggable in real time.
 
 I want to walk through what that means and why it matters, because the same architecture maps onto every domain where trust depends on traceability — legal analysis, medical documentation, financial reporting. The newsroom is the worked example. The architecture is the lesson.
 
@@ -55,9 +57,13 @@ The second measurement is semantic similarity — cosine of the embeddings. Both
 
 So one metric flags it. The other does not. The gap between them is somewhere between 0.62 and 0.75 — and the *direction* of the gap is stable across embedding models, even when the magnitude shifts.
 
+![Figure 6.2 — Same fabrication, two metrics, opposite verdicts. Token-overlap deviation (0.87) flags the Reyes fabrication; semantic deviation (0.19) misses it. The direction of the gap — not its magnitude — is the lesson.](../images/fig-6-2-metric-gap.png)
+
 Why do they disagree? They are measuring different things. Jaccard operates on sets of tokens; it sees that the two texts share a topic but use almost entirely different words. Cosine operates on learned dense representations; it sees that the two texts live near each other in semantic space. Both measurements are correct about what they measure. The disagreement is not a bug in either metric. It is a property of the task.
 
 Journalism cares about *which specific words were attributed to the speaker.* Token overlap is sensitive to that. Embedding similarity is not. This is why the Reyes failure lives in what I think of as the dangerous quadrant — high topical similarity, fabricated attribution. Embedding similarity scores the output as adherent because the topic matches. Token-level measurement is what reaches it.
+
+![Figure 6.3 — The error-space quadrant map. The dangerous quadrant is bottom-right — high semantic similarity with fabricated attribution — reachable only by token-level or domain-specific measurement, not by embedding cosine.](../images/fig-6-3-quadrant-map.png)
 
 Every fabrication that looks like journalism lives in this quadrant. By construction, fabricated quotes are topically coherent with the surrounding story — that is what makes them plausible. A system that uses only semantic similarity will pass them at a high rate. The domain-specific failure mode is invisible to the domain-agnostic metric, and in journalism the tolerance for a fabricated direct quote is zero, regardless of cosine score.
 
@@ -67,7 +73,7 @@ The lesson generalizes. Every domain has a failure mode that some default metric
 
 Before building Collaborator as a RAG system, Magid's clients tried the obvious thing: paste a broadcast script into an LLM and ask for a web story. The failures were structural, and they show why pipeline structure matters more than prompt cleverness.
 
-The first failure was inconsistency. The same script, prompted twice, produced different outputs. One version included a quote, the next paraphrased it. Magid's product team described single-shot prompting as too inconsistent to ship.
+The first failure was inconsistency. The same script, prompted twice, produced different outputs. One version included a quote, the next paraphrased it. Magid's product team [described single-shot prompting as too inconsistent to ship](https://blog.promptlayer.com/how-magid-built-enterprise-grade-ai-agents-for-content-creation-with-promptlayer/).
 
 The second was an inconsistency loop. Fixing one flaw created two. Telling the model to always include direct quotes caused it to fabricate quotes when the source did not contain any. Telling it to maintain the original story structure caused it to ignore platform-specific formatting. The prompt became patch on patch.
 
@@ -75,11 +81,15 @@ The third was the context-window mirage. Large context windows provided *capacit
 
 The architectural lesson: the problem was not the model's capability. It was the absence of structure. A single call conflates operations that need to be separate stages.
 
+![Figure 6.4 — The problem is structure, not capability. A single LLM call cannot retrieve, transform, evaluate, and verify at once; decomposing the work into separable stages is what makes a measurement gate possible.](../images/fig-6-4-single-vs-decomposed.png)
+
 Magid's response was to decompose the work into five stages, each with a specific contract. The first is the *knowledge boundary* — the agent operates only on the journalist's uploaded source. No external data, no pre-trained knowledge added "helpfully" from training. If the journalist's script mentions a city council vote but does not include the member's title, Collaborator will not fill in the title — even if the model "knows" it. The system produces content faithful to the input, even at the cost of completeness. This is a trade-off. The system is less helpful than an unconstrained LLM. But it is more trustworthy.
 
 The second stage is *retrieval and decomposition* — orchestrating platform-specific sub-tasks scoped to source passages, rather than asking one prompt to do all of them at once. The third is *generation* by specialized agents — web, social, push, summary — each with a scoped context and a single-purpose prompt. The fourth is *evaluation* — a domain-specific scorer running on every output. The fifth is *observability* — real-time monitoring with per-newsroom custom metrics, so silent quality degradation after a prompt update gets caught before it propagates.
 
 The decomposition is not a feature list. It is a sequence of constraints. A pipeline that omits any stage does not lack a feature. It lacks a constraint, and missing constraints produce unchecked failure modes.
+
+![Figure 6.5 — Magid's five-stage pipeline. Each stage closes a failure mode the previous stage cannot reach; a pipeline missing any position lacks a constraint, not a feature.](../images/fig-6-5-five-stage-pipeline.png)
 
 ## The gate, not the average
 
@@ -91,17 +101,23 @@ If any axis scores 1, the system blocks the story — does not publish. If any a
 
 Consider why this matters. A story scores quote fidelity 5, attribution accuracy 1, semantic fidelity 5. The weighted average — 5 plus 1 plus 5 over 3 — is 3.67, which passes a threshold of 3.5. But attribution = 1 means a fabricated attribution. In journalism, that story cannot publish, regardless of how faithful the rest is. The worst-axis gate catches it. The weighted average passes it.
 
+![Figure 6.6 — Same scores, opposite decisions. A weighted average (3.67) ships a fabricated attribution; the worst-axis gate (min = 1) blocks it. The gate matches how failure actually works in a high-stakes domain.](../images/fig-6-6-worst-axis-vs-average.png)
+
 The false-proceed rate under weighted averaging is highest precisely when one axis fails catastrophically while others compensate — which is the most dangerous failure mode, not the least. A weighted average uses more information in a mathematical sense, but it averages across a dimension that, in high-stakes domains, should not be averageable. A fabricated quote is not partially canceled by accurate framing. A misattributed fact is not partially canceled by a correct quote elsewhere. The failure modes are absolute, not comparative.
 
 The weighted average assumes a continuous quality surface where trade-offs are meaningful. For domains where trust is the product, the quality surface is not continuous — it is gated. The worst-axis gate matches the structure of the failure. The weighted average smooths over it.
 
 In production, detection produces a programmatic halt. The pipeline does not log a warning and continue. It stops. This is what *architectural constraint* means in code: the system physically cannot proceed past a detected deviation without human intervention.
 
-The economics work out. A published misquotation costs the newsroom thousands of dollars in corrections and credibility damage; evaluation costs cents per story. If the evaluation catches one fabrication per few hundred stories, it pays for itself on every run. Magid's reported numbers — story production from forty-five minutes to five, eight of ten journalists who try Collaborator becoming daily users, every paying customer renewing, thousands of stories a day — are downstream of trust. Without the measurement layer, the same model produces faster outputs journalists cannot trust. Trust is the bottleneck. The architecture produces trust.
+The economics work out. A published misquotation costs the newsroom thousands of dollars in corrections and credibility damage; evaluation costs cents per story. The natural way to keep that cost down is tiered — run a cheap, deterministic check on every story and reserve the expensive LLM scorer for the stories that check flags or that fall in a high-risk topic. If the evaluation catches one fabrication per few hundred stories, it pays for itself on every run. Magid's reported numbers — [story production from forty-five minutes to five](https://magid.com/products/collaborator-ai-newsrooms/), and [eight of ten journalists who try Collaborator becoming daily users, every paying customer renewing, thousands of stories a day](https://blog.promptlayer.com/how-magid-built-enterprise-grade-ai-agents-for-content-creation-with-promptlayer/) — are downstream of trust. Without the measurement layer, the same model produces faster outputs journalists cannot trust. Trust is the bottleneck. The architecture produces trust.
+
+![Figure 6.7 — Tiered evaluation keeps the cost down. A fast, deterministic token-overlap check runs on every story; the expensive three-axis LLM scorer fires only when that check flags a deviation or the topic is high-risk.](../images/fig-6-7-tiered-evaluation.png)
 
 ## Where measurement runs out
 
 I want to end honestly, because the architecture I have just described has limits that the architecture itself cannot reach.
+
+![Figure 6.8 — Three limits the measurement layer cannot reach. Source accuracy, editorial intent, and metric drift each require a human decision node — the architecture's job is to surface these limits, not hide them.](../images/fig-6-8-architectural-limits.png)
 
 The first limit is *source accuracy.* The entire measurement layer measures faithfulness to the source. It does not measure whether the source is accurate. If a journalist's script contains a misremembered statistic, a misheard quote, or an incorrect attribution, Collaborator will faithfully reproduce the error and the scorer will rate the output as perfect. The system is faithful. It is not truthful. Fidelity to source and accuracy of source are independent properties, and the architecture measures only the first. Architectural alternatives exist — external fact-checkers, cross-referencing against wire services — but each requires relaxing the knowledge boundary, which is exactly the constraint the architecture refused to relax. The trade-off is real and cannot be resolved architecturally. It requires the journalist to be right.
 
@@ -132,7 +148,11 @@ The rule: every agent output must be traceable to evidence the agent retrieved, 
 
 ## AI Wayback Machine
 
-**Hilary Putnam** was philosopher whose "Brain in a Vat" argument forced careful thinking about how meaning gets grounded in the external world.
+**Hilary Putnam** was a philosopher whose "Brain in a Vat" argument forced careful thinking about how meaning gets grounded in the external world.
+
+![Hilary Putnam](../images/hilary-putnam-1vp.png)
+
+*Puppet Art by [Nik Bear Brown](https://www.nikbearbrown.com/).*
 
 **Run this:**
 

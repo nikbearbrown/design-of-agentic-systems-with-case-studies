@@ -1,0 +1,74 @@
+<svg viewBox="0 0 1000 560" xmlns="http://www.w3.org/2000/svg" font-family="'DejaVu Sans','Helvetica Neue',Arial,sans-serif">
+  <defs>
+    <marker id="a" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#3a3a3a"/></marker>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#a83838"/></marker>
+    <marker id="ag" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#2f6a4a"/></marker>
+    <marker id="ab" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#3a5e86"/></marker>
+  </defs>
+  <rect width="1000" height="560" fill="#ffffff"/>
+
+  <text x="500" y="40" text-anchor="middle" font-size="28" font-weight="700" fill="#1a1a1a">CodeSentinel — specialize · ground · adversarially validate</text>
+  <text x="500" y="68" text-anchor="middle" font-size="16" font-style="italic" fill="#6b6b6b">Three agents on a directed graph; no security finding reaches the user without a citation the Evaluator can verify.</text>
+
+  <!-- Source -->
+  <rect x="30" y="150" width="140" height="66" rx="8" fill="#ededed" stroke="#4a4a4a" stroke-width="2"/>
+  <text x="100" y="180" text-anchor="middle" font-size="17" font-weight="700" fill="#222">Source code</text>
+  <text x="100" y="201" text-anchor="middle" font-size="12.5" fill="#3a3a3a">(paste / upload)</text>
+
+  <!-- LangGraph container -->
+  <rect x="210" y="118" width="300" height="358" rx="12" fill="none" stroke="#9a9a9a" stroke-width="2" stroke-dasharray="5 5"/>
+  <text x="360" y="138" text-anchor="middle" font-size="14.5" font-style="italic" fill="#6b6b6b">LangGraph orchestration</text>
+
+  <!-- Code Quality Auditor -->
+  <rect x="232" y="148" width="256" height="58" rx="8" fill="#ededed" stroke="#4a4a4a" stroke-width="2"/>
+  <text x="360" y="174" text-anchor="middle" font-size="17" font-weight="700" fill="#222">Code Quality Auditor</text>
+  <text x="360" y="194" text-anchor="middle" font-size="12.5" fill="#3a3a3a">maintainability &amp; style</text>
+
+  <!-- Security Sentinel -->
+  <rect x="232" y="226" width="256" height="66" rx="8" fill="#d4e6db" stroke="#2f6a4a" stroke-width="2.5"/>
+  <text x="360" y="252" text-anchor="middle" font-size="17" font-weight="700" fill="#1f5e3a">Security Sentinel</text>
+  <text x="360" y="274" text-anchor="middle" font-size="12" fill="#2f5e46">scans for vulns — must cite a passage</text>
+
+  <!-- RAG -->
+  <rect x="232" y="318" width="256" height="140" rx="8" fill="#d9e3ee" stroke="#3a5e86" stroke-width="2"/>
+  <text x="360" y="343" text-anchor="middle" font-size="14.5" font-weight="700" fill="#274970">Knowledge base — 56 passages</text>
+  <text x="360" y="366" text-anchor="middle" font-size="12" fill="#33506f">OWASP 2025 · 29 CWE · 17 patterns</text>
+  <text x="360" y="387" text-anchor="middle" font-size="12" fill="#33506f">two-pass retrieval + lexical rerank</text>
+  <text x="360" y="408" text-anchor="middle" font-size="12" fill="#33506f">ChromaDB → TF-IDF → pure-Python</text>
+  <text x="360" y="432" text-anchor="middle" font-size="11.5" font-style="italic" fill="#6b6b6b">grounds every security finding</text>
+  <line x1="360" y1="318" x2="360" y2="294" stroke="#3a5e86" stroke-width="2.5" marker-end="url(#ab)"/>
+
+  <!-- Source -> agents -->
+  <line x1="170" y1="178" x2="230" y2="170" stroke="#3a3a3a" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="170" y1="198" x2="230" y2="252" stroke="#3a3a3a" stroke-width="2" marker-end="url(#a)"/>
+
+  <!-- Evaluator -->
+  <rect x="560" y="150" width="212" height="150" rx="8" fill="#ecd0d0" stroke="#a83838" stroke-width="2.5"/>
+  <text x="666" y="184" text-anchor="middle" font-size="17" font-weight="700" fill="#8f2a2a">Evaluator Guardian</text>
+  <text x="666" y="208" text-anchor="middle" font-size="12.5" fill="#7a2a2a">internal adversary</text>
+  <text x="666" y="229" text-anchor="middle" font-size="12.5" fill="#7a2a2a">two-layer citation gate</text>
+  <text x="666" y="253" text-anchor="middle" font-size="11.5" font-style="italic" fill="#8f2a2a">detailed in Fig. 15.3</text>
+  <text x="666" y="278" text-anchor="middle" font-size="12" fill="#7a2a2a">producer ≠ adjudicator</text>
+
+  <!-- agents -> Evaluator -->
+  <line x1="488" y1="172" x2="560" y2="198" stroke="#3a3a3a" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="488" y1="258" x2="560" y2="244" stroke="#3a3a3a" stroke-width="2" marker-end="url(#a)"/>
+
+  <!-- PASS -->
+  <rect x="812" y="152" width="168" height="74" rx="8" fill="#d4e6db" stroke="#2f6a4a" stroke-width="2.5"/>
+  <text x="896" y="183" text-anchor="middle" font-size="14.5" font-weight="700" fill="#1f5e3a">Findings → user</text>
+  <text x="896" y="204" text-anchor="middle" font-size="12" fill="#2f5e46">every claim cited</text>
+  <line x1="772" y1="198" x2="812" y2="190" stroke="#2f6a4a" stroke-width="2.5" marker-end="url(#ag)"/>
+  <text x="792" y="178" text-anchor="middle" font-size="12.5" font-weight="700" fill="#2f6a4a">PASS</text>
+
+  <!-- FAIL -> reject -->
+  <rect x="560" y="362" width="252" height="76" rx="8" fill="#ecd0d0" stroke="#a83838" stroke-width="2"/>
+  <text x="686" y="390" text-anchor="middle" font-size="14" font-weight="700" fill="#8f2a2a">Reject + structured feedback</text>
+  <text x="686" y="414" text-anchor="middle" font-size="12" fill="#7a2a2a">retry ≤ 3, then circuit breaker halts</text>
+  <line x1="666" y1="300" x2="680" y2="362" stroke="#a83838" stroke-width="2.5" marker-end="url(#ar)"/>
+  <text x="648" y="334" text-anchor="middle" font-size="12.5" font-weight="700" fill="#a83838">FAIL</text>
+
+  <!-- retry loop -->
+  <path d="M560 404 C 360 480, 132 472, 124 360 C 120 318, 156 258, 228 256" fill="none" stroke="#a83838" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#ar)"/>
+  <text x="300" y="505" text-anchor="middle" font-size="12.5" font-style="italic" fill="#8f2a2a">rejected findings loop back to the agent for revision</text>
+</svg>
