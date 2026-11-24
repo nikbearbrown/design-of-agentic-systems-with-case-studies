@@ -5,67 +5,97 @@
 **Copyright:** Copyright © 2026 Nik Bear Brown. All rights reserved.  
 **Edition:** 2026
 
-## Summary
+## About the book
 
-*Design of Agentic Systems with Case Studies* is a structured textbook for readers who need a clear path through the subject rather than a loose collection of explanations. It begins with Chapter 1 — The Move That Changed Everything, moves through 45 core chapters, and ends with Chapter 45 — Case: StudyMate AI.
+This book takes apart how agentic systems are built: where decisions happen, how information reaches the model, what makes a response trustworthy, and how the architecture behaves when something goes wrong. The first chapters cover system design, retrieval, evidence, context, cost, and interoperability. The case studies let readers compare those choices across different applications rather than assuming one architecture works everywhere.
 
-AI matters to *Design of Agentic Systems with Case Studies* because the modern textbook is no longer only a static container. It is also part of a learning system: searchable, remixable, explainable, and increasingly connected to tools such as Medhavy. For Bear Brown books, the relevant question is not whether AI can replace the learner or the teacher. It cannot. The useful question is what AI can make easier to inspect: definitions, worked examples, misconceptions, practice sequences, alternate explanations, and the structure of an argument. This book treats AI as infrastructure for practical AI-assisted authorship, analysis, and production. The chapters should still stand on their own as readable prose, but they are also designed to be legible to an intelligent textbook system.
+For students and developers who want to compare or design agentic systems. The case studies describe specific projects; their presence is not a claim of clinical, financial, legal, or security effectiveness.
 
-## Table of Contents
+## Learning outcomes
 
-- **Chapter 1: Chapter 1 — The Move That Changed Everything.** *AlphaGo, the Geometry of What Humans Cannot See, and Why the Story Is Cleaner Than I First Told It* **Author:** Nik Bear Brown || | **Definition** | The ability to explain a specific output in terms a human can follow, once that...
-- **Chapter 2: Chapter 2 — The Blueprint Before the Build.** *Structural Layers, the BDI Framework, and Localizing Agent Failures* **Author:** Nik Bear Brown Blueprints make design legible. The model produces legible artifacts on demand. The risk is producing a legible artifact that papers over an illegible design. Where the model genuinely helps:...
-- **Chapter 3: Chapter 3 — Five Patterns, Five Trade-offs.** *How the architecture you choose determines what breaks — not the model you use* **Author:** Nik Bear Brown Patterns are categorical. Trade-offs are local. The model is good at the first and lossy at the second. Where the model genuinely helps: producing...
-- **Chapter 4: Chapter 4 — RAG 101.** *When to Build a Retrieval Pipeline and When to Skip It* **Author:** Aditya Mitra **Editor:** Nik Bear Brown Sit with a problem before I teach you anything. You have a 500-page corporate policy manual. A user asks, *"What's our parental leave policy...
-- **Chapter 5: Chapter 5 — Choosing and Configuring Your RAG Pipeline.** *Chunking, Embedding, Indexing, Querying, and Reranking* **Author:** Nik Bear Brown The cost story is easy to write down. A single query that loads the whole corpus pays input cost on every token of the corpus, every time. Call the corpus size $T_{ctx}$,...
-- **Chapter 6: Chapter 6 — Grounding Agents in Evidence.** *Case study: Magid's Newsroom RAG System* **Author:** Aravind Balaji **Editor:** Nik Bear Brown Grounding distinguishes an agent from a confabulator. The model is structurally biased toward fluent confabulation. Where the model genuinely helps: designing the evidence requirements for a given agent decision...
-- **Chapter 7: Chapter 7 — Hallucination: When Plausibility Beats Truth.** *Why better prompts and bigger models leave the failure mode exactly where they found it* **Authors:** Madhumitha Nandhikatti, Gagana M **Editor:** Nik Bear Brown A language model does not retrieve facts from a database. It does not maintain a pointer to a...
-- **Chapter 8: Chapter 8 — The Attack Surface No One Designed For.** *Security, Governance, and OWASP Agentic Standards* I want to tell you about an agent that did its job correctly and ruined a firm. The scenario is composite — drawn from post-incident patterns I've seen across several automated trading deployments, with the details...
-- **Chapter 9: Chapter 9 — Five Ways Context Kills Agents.** *Offloading, Isolation, Retrieval, Compaction, and Caching — architectural mitigations mapped to the failure modes they actually address* **Authors:** Junyi Zhang, Mridula Mahendran **Editor:** Nik Bear Brown Context failures look like reasoning failures. The agent appeared to think incorrectly; the actual failure was...
-- **Chapter 10: Chapter 10 — When Coordinated Agents Become Unpredictable.** *How Architecture Creates Emergence, Failure, and Safety Boundaries in Agentic Systems* **Author:** [Student — TA to fill in] **Editor:** Nik Bear Brown Engineering discussion about multi-agent systems leans on three words — *emergence*, *coordination*, *safety* — each of which hides a specific...
-- **Chapter 11: Chapter 11 — Model Economics and the Build-or-Buy Decision.** *GPT-4o, GPT-4o-mini, Tiered Routing, and the TCO of Local Deployment* I want to tell you about an invoice. The story is composite — built from post-incident patterns I've seen in several early-stage deployments. The specific company isn't real; the pattern has played...
-- **Chapter 12: Chapter 12 — Choosing Your Weapon.** *LangGraph vs. AutoGen vs. CrewAI vs. PydanticAI in Production* **Authors:** Rahul Manohar Durshinapally, Hasith Reddy Rapolu **Editor:** Nik Bear Brown Choosing a model or framework is a decision the chapter walks through deliberately. The model has an opinion about which model you...
-- **Chapter 13: Chapter 13 — The Protocol Layer: MCP, ACP, and the Interoperability Standard.** *(Part II — the lateral and inbound axes)* I want to tell you about a team that solved one architectural problem cleanly and rebuilt it one layer up, by accident, in roughly the time it took to ship the second version of...
-- **Chapter 14: Chapter 14 — Twelve Production Builds: A Scaffolded Project Sequence.** **Author:** [Student — TA to fill in] **Editor:** Nik Bear Brown Suppose your multi-agent system has started returning research syntheses that miss one of the four workers' contributions. The failure is intermittent — three times in ten — and when you inspect...
-- **Chapter 15: Chapter 15 — Case: CodeSentinel.** *A multi-agent code-review system that decomposes false-positive reduction into prompt-engineering effort and architectural contribution.* **Author:** Aravind Balaji **Editor:** Nik Bear Brown *Spring 2026.* **Barbara Liskov** was pioneered data abstraction and type-safe software design — the Liskov substitution principle anchors modern static analysis....
-- **Chapter 16: Chapter 16 — Case: VerifAI.** *A four-stage adversarial verification pipeline for AI-generated legal text — extraction, retrieval, NLI scoring, transparency report.* **Author:** Rithwik Srivastava **Editor:** Nik Bear Brown *Spring 2026.* **Tony Hoare** was developed quicksort, communicating sequential processes, and formal verification methods that prefigure AI verification. **Run...
-- **Chapter 17: Chapter 17 — Case: PharmGuard AI.** *A plan-retrieve-generate pipeline that keeps the LLM out of enumeration, lookup, and severity classification — and into the only step where fluent prose is the deliverable.* **Author:** Shwetanshu Subhash Deshmukh **Editor:** Nik Bear Brown *Spring 2026.* **Frances Oldham Kelsey** was FDA reviewer...
-- **Chapter 18: Chapter 18 — Case: BioClaim Guard.** *Verifying medical claims rather than generating them — PICO decomposition, live PubMed retrieval, and a four-state verdict that names UNCERTAIN as first-class output.* **Author:** Darshak Desai **Editor:** Nik Bear Brown *Spring 2026.* **John Ioannidis** was epidemiologist whose 2005 paper "Why Most Published...
-- **Chapter 19: Chapter 19 — Case: ClearDischarge.** *Translating discharge summaries to Grade-6-to-8 patient action plans through a five-stage pipeline with a dual-gate readability check.* **Authors:** Rahul Reddy, Rohan Reddy **Editor:** Nik Bear Brown *Spring 2026.* **Atul Gawande** was surgeon whose Checklist Manifesto reshaped how hospitals handle high-stakes handoffs like...
-- **Chapter 20: Chapter 20 — Case: AIRA.** *An eight-category risk taxonomy for academic-integrity policy clauses, with citation-faithfulness verification — and the honest decomposition of where the +27.5-point accuracy gain actually comes from.* **Author:** Rajesh Kumar Rama Reddy **Editor:** Nik Bear Brown *Spring 2026.* **Joseph Weizenbaum** was built ELIZA in...
-- **Chapter 21: Chapter 21 — Case: CrisisLens.** *A four-step agentic pipeline that scores crisis-line volunteer practice transcripts against clinical frameworks — and tests itself with adversarial transcripts where the failures are the point.* **Author:** Kavin Ravi Jha **Editor:** Nik Bear Brown *Spring 2026.* **Charles Perrow** was sociologist whose Normal...
-- **Chapter 22: Chapter 22 — Case: TrialMatch AI.** *An eight-agent pipeline that matches patients to clinical trials across live government APIs, with a Controller that picks fine-tuned models when they're available and falls through to LLMs when they aren't.* **Author:** Abhinav Kumar Piyush **Editor:** Nik Bear Brown | | |...
-- **Chapter 23: Chapter 23 — Case: PolicyLens.** *A claim-by-claim auditor for AI-generated policy summaries — where deterministic rules handle the easy verdicts and the Claude tool-calling agent only fires on the high-risk ones.* **Author:** Ushake Shravya **Editor:** Nik Bear Brown | : | : | *Spring 2026.* **Cass Sunstein**...
-- **Chapter 24: Chapter 24 — Case: PlanLens.** *A 401(k) Summary Plan Description Q&A system where citation enforcement lives in the prompt template's required output structure rather than as a politely-worded prompt suggestion.* **Author:** Vanshi Patel **Editor:** Nik Bear Brown *Spring 2026.* **Herbert Simon** was Nobel-winning economist and AI pioneer...
-- **Chapter 25: Chapter 25 — Case: TacticalLens.** *A locally-hosted soccer-intelligence RAG that routes queries by intent before retrieval — and refuses to fabricate when the open dataset doesn't have what was asked for.* **Author:** Nikhil Kalyan Devihosur **Editor:** Nik Bear Brown | | | Query routing accuracy | ~95%...
-- **Chapter 26: Chapter 26 — Case: Pitch Verdict.** *A five-agent pipeline that generates a tactical match report and then verifies every number in it against the source — because real analysis produces an answer and then checks it.* **Author:** Hrishikesh Kulkarni **Editor:** Nik Bear Brown *Spring 2026.* **Daniel Kahneman** was...
-- **Chapter 27: Chapter 27 — Case: Pygmy.** *A self-hosted AI-native data-ops platform that fine-tunes a 70B model on pipeline-operations data, runs everything on-premise, and refuses to act without human approval.* **Author:** Rohan Prabhakar **Editor:** Nik Bear Brown *Spring 2026.* **Mary Allen Wilkes** was programmed the LINC at MIT in...
-- **Chapter 28: Chapter 28 — Case: Jobzilla AI.** *A Recruiter / Coach / Judge debate where a 30-point disagreement triggers an automatic re-debate — adversarial reasoning as a structural property of the architecture, not as a clever prompt.* **Authors:** Husain Shajapurwala Yusuf, Sahil Kasliwal **Editor:** Nik Bear Brown | |...
-- **Chapter 29: Chapter 29 — Case: CostSherlock.** *A four-agent pipeline that distinguishes correlation from causation in AWS cost-anomaly investigation — using a controlled vocabulary of rule-out categories to make "I don't know" a first-class verdict.* **Authors:** Vatsal Naik, Priti Ghosh **Editor:** Nik Bear Brown | | | | 1...
-- **Chapter 30: Chapter 30 — Case: LitmusQE.** *A five-stage pipeline that asks an LLM to act as a security researcher generating adversarial Python tests — and routes everything through Judge0 because no user-submitted code runs on the backend.* **Authors:** Pavan Garlapati, Navya Ravuri **Editor:** Nik Bear Brown | |...
-- **Chapter 31: Chapter 31 — Case: SchemaGuard.** *A four-stage pipeline that catches the failure mode JSON Schema can't see — semantically incoherent records that pass every type check, with population-level drift detection running orthogonal to per-record validation.* **Author:** Pragati Narotam **Editor:** Nik Bear Brown | *Spring 2026.* **Edgar F....
-- **Chapter 32: Chapter 32 — Case: CLIS V2.** *A clinical literature intelligence system where every architectural decision maps to a specific failure mode in evidence-based medicine — and the test suite includes a hallucination trap designed to fail safely when the LLM fabricates studies.* **Author:** Hritik Hassani **Editor:** Nik Bear...
-- **Chapter 33: Chapter 33 — Case: CloudArch Designer.** *A nine-stage pipeline that scopes the LLM narrowly to natural-language understanding, keeps Terraform emission deterministic, and adds a Stage 0 prompt normalizer that lifted aggregate stability from 0.446 to 0.914.* **Author:** Niraj Umeshbhai Patel **Editor:** Nik Bear Brown | | | |...
-- **Chapter 34: Chapter 34 — Case: Personal Cybersecurity Guardian.** *A LangGraph multi-agent threat-intelligence system for non-technical users — with a synthesis layer governed by five conflict-resolution rules and an anti-hallucination CVE-ID redaction pass.* **Author:** Anusha Prakash **Editor:** Nik Bear Brown | | | | | 1 | Phishing returns MALICIOUS |...
-- **Chapter 35: Chapter 35 — Case: Syllabus Navigator.** *An academic compliance auditor that catches the silent failures everyone misses — Thursday-October-12th-is-actually-Wednesday and the grading scale that contradicts the university standard — by grounding LLM judgments in retrieved policy text.* **Author:** Udit Chaturvedi **Editor:** Nik Bear Brown | *Spring 2026.* **Benjamin...
-- **Chapter 36: Chapter 36 — Case: Adaptive Linear Algebra Explainer (Faraz).** *A RAG pipeline that diagnoses a student's conceptual tier before retrieving anything — three misconception probes that route into Geometric Intuition, Formal Beginner, or Algebraically Grounded explanations.* **Author:** Faraz Elahi Mohammed **Editor:** Nik Bear Brown | | | `vector_spaces_notes.pdf` | 1 |...
-- **Chapter 37: Chapter 37 — Case: Adaptive Linear Algebra Explainer (Abdul).** *The same architecture as Chapter 36, deployed on a hosted-inference web stack — FastAPI + React + Groq — and what changes when the inference path moves from local-Ollama to cloud-API.* **Author:** Abdul Muqeet Mohammed **Editor:** Nik Bear Brown *Spring 2026.* **Cleve...
-- **Chapter 38: Chapter 38 — Case: AI-Powered Stock Research Platform.** *A four-agent CrewAI pipeline with two-phase ticker-aware retrieval — because financial language sounds the same across companies and naive semantic search returns the wrong tickers.* **Author:** Tianyu Zhang **Editor:** Nik Bear Brown | | | `v1_basic` | Simple role/goal/backstory | 184 chars...
-- **Chapter 39: Chapter 39 — Case: Immigrant Tax Filing Assistant.** *A six-stage RAG pipeline where 24 keywords trigger CPA escalation before the LLM is ever called — and a Substantial Presence Test calculator runs as pure Python with zero LLM involvement.* **Author:** Param Shah **Editor:** Nik Bear Brown | | *Spring 2026.*...
-- **Chapter 40: Chapter 40 — Case: MindMirror.** *A two-stage write-then-enrich pipeline that returns the entry to the user in <200ms while a background task does the LLM analysis — because a journaling app that makes you wait is a journaling app you won't use.* **Author:** Mohit Jain **Editor:** Nik...
-- **Chapter 41: Chapter 41 — Case: Research Claim Auditor.** *A four-component pipeline that catches the citation-distortion failure mode where a passage is topically similar to the claim but logically contradicts it — using an `adequacy_score` field that distinguishes "match" from "support."* **Author:** Gomathy Selvamuthiah **Editor:** Nik Bear Brown | | |...
-- **Chapter 42: Chapter 42 — Case: WCAG Compliance Auditor.** *An accessibility auditor that detects violations, generates fixes, then re-audits the fixed HTML — closing the feedback loop that the manual workflow leaves open for hours.* **Author:** Vrushti Shah **Editor:** Nik Bear Brown *Spring 2026.* **Vint Cerf** was helped make accessibility a...
-- **Chapter 43: Chapter 43 — Case: Thought2Do.** *A four-agent voice-driven task system designed around the recognition that the friction of logging a task is higher than the friction of doing it — with an evaluation framework that names "silent failure" as the primary metric.* **Author:** Yohan Markose **Editor:** Nik...
-- **Chapter 44: Chapter 44 — Case: AI Financial Fragility Detector.** *A seven-stage pipeline that combines quantitative ratios with NLP textual stress analysis — and uses synthetic data generation to address the class-imbalance problem of having only 3-4 real bank failures to learn from.* **Author:** Nikhil Patwal **Editor:** Nik Bear Brown | *Spring...
-- **Chapter 45: Chapter 45 — Case: StudyMate AI.** *A four-layer learning-content system where the same RAG pipeline produces grounded Q&A, synthetic quizzes, flashcards, and ELI5 explanations — with diverse context sampling that prevents quizzes from being biased toward the opening pages of a textbook.* **Author:** [verify — author placeholder unfilled...
+After working through the book, readers should be able to:
 
-## Files
+- Break an agentic system into responsibilities and identify which layer owns a decision or a failure.
+- Decide when retrieval is useful and assess how evidence, context, and verification affect the result.
+- Compare architectural patterns and framework or protocol choices using their trade-offs, not their names.
+- Explain how coordination, permissions, and cost affect what a system can do reliably.
+- Read a case study critically: distinguish a design claim from what the project actually demonstrates.
 
-- `chapters/00-frontmatter.md` — title page, copyright, dedication, and preface
-- `chapters/00-introduction.md` — roadmap and book-level AI note
-- `chapters/99-back-matter.md` — acknowledgments, author note, references placeholder, and Medhavy note
-- `LICENSE.md` — rights and reuse terms
+## Start reading
+
+The manuscript files are in [the chapters folder](chapters/). Open [Front matter](chapters/00-frontmatter.md), [Preface](chapters/00-preface.md), [Introduction](chapters/00-introduction.md), or choose a chapter below.
+
+## Chapters
+
+### Architecture and foundations
+
+1. [The Move That Changed Everything](chapters/01-move-that-changed-everything.md)
+2. [The Blueprint Before the Build](chapters/02-blueprint-before-the-build.md)
+3. [Five Patterns, Five Trade-offs](chapters/03-five-patterns-five-tradeoffs.md)
+
+### Retrieval, evidence, and reliability
+
+4. [RAG 101](chapters/04-rag-101.md)
+5. [Choosing and Configuring Your RAG Pipeline](chapters/05-configuring-your-rag-pipeline.md)
+6. [Grounding Agents in Evidence](chapters/06-grounding-agents-in-evidence.md)
+7. [Hallucination: When Plausibility Beats Truth](chapters/07-hallucination-plausibility-vs-truth.md)
+8. [The Attack Surface No One Designed For](chapters/08-attack-surface-no-one-designed-for.md)
+9. [Five Ways Context Kills Agents](chapters/09-five-ways-context-kills-agents.md)
+
+### Coordination, tools, and cost
+
+10. [When Coordinated Agents Become Unpredictable](chapters/10-coordinated-agents-emergence.md)
+11. [Model Economics and the Build-or-Buy Decision](chapters/11-model-economics.md)
+12. [Choosing Your Weapon](chapters/12-choosing-your-weapon.md)
+13. [The Protocol Layer: MCP, ACP, and the Interoperability Standard](chapters/13-protocol-layer.md)
+
+### Projects and case studies
+
+14. [Twelve Production Builds: A Scaffolded Project Sequence](chapters/14-twelve-production-builds.md)
+15. [Case: CodeSentinel](chapters/15-case-codesentinel.md)
+16. [Case: VerifAI](chapters/16-case-verifai.md)
+17. [Case: PharmGuard AI](chapters/17-case-pharmguard.md)
+18. [Case: BioClaim Guard](chapters/18-case-bioclaim-guard.md)
+19. [Case: ClearDischarge](chapters/19-case-cleardischarge.md)
+20. [Case: AIRA](chapters/20-case-aira.md)
+21. [Case: CrisisLens](chapters/21-case-crisislens.md)
+22. [Case: TrialMatch AI](chapters/22-case-trialmatch.md)
+23. [Case: PolicyLens](chapters/23-case-policylens.md)
+24. [Case: PlanLens](chapters/24-case-planlens.md)
+25. [Case: TacticalLens](chapters/25-case-tacticallens.md)
+26. [Case: Pitch Verdict](chapters/26-case-pitch-verdict.md)
+27. [Case: Pygmy](chapters/27-case-pygmy.md)
+28. [Case: Jobzilla AI](chapters/28-case-jobzilla.md)
+29. [Case: CostSherlock](chapters/29-case-costsherlock.md)
+30. [Case: LitmusQE](chapters/30-case-litmusqe.md)
+31. [Case: SchemaGuard](chapters/31-case-schemaguard.md)
+32. [Case: CLIS V2](chapters/32-case-clis-v2.md)
+33. [Case: CloudArch Designer](chapters/33-case-cloudarch.md)
+34. [Case: Personal Cybersecurity Guardian](chapters/34-case-cybersecurity-guardian.md)
+35. [Case: Syllabus Navigator](chapters/35-case-syllabus-navigator.md)
+36. [Case: Adaptive Linear Algebra Explainer (Faraz)](chapters/36-case-adaptive-linalg-faraz.md)
+37. [Case: Adaptive Linear Algebra Explainer (Abdul)](chapters/37-case-adaptive-linalg-abdul.md)
+38. [Case: AI-Powered Stock Research Platform](chapters/38-case-stock-research.md)
+39. [Case: Immigrant Tax Filing Assistant](chapters/39-case-immigrant-tax.md)
+40. [Case: MindMirror](chapters/40-case-mindmirror.md)
+41. [Case: Research Claim Auditor](chapters/41-case-research-claim-auditor.md)
+42. [Case: WCAG Compliance Auditor](chapters/42-case-wcag-auditor.md)
+43. [Case: Thought2Do](chapters/43-case-thought2do.md)
+44. [Case: AI Financial Fragility Detector](chapters/44-case-financial-fragility.md)
+45. [Case: StudyMate AI](chapters/45-case-studymate.md)
+
+## Additional material
+
+The two additional essays below are kept outside the main numbered sequence. Chapter-specific author and editor credits are in the chapter files.
+
+- [The Control Plane Problem](chapters/18-control-plane-problem.md)
+
+- [Durable Execution in Agentic Systems](chapters/chapter-13-durable-execution.md)
+
+- [Back matter](chapters/99-back-matter.md)
+
+See [the license](LICENSE.md) for rights and reuse terms.
 
 ## Medhavy
 
-This book is prepared for Kindle, online publication, and integration with Medhavy: https://www.medhavy.com/
+The manuscript is also being prepared for use with [Medhavy](https://www.medhavy.com/).
