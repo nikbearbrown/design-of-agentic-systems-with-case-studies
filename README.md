@@ -13,19 +13,15 @@ For students and developers who want to compare or design agentic systems. The c
 
 ## Learning outcomes
 
-After working through the book, readers should be able to:
-
 - Break an agentic system into responsibilities and identify which layer owns a decision or a failure.
 - Decide when retrieval is useful and assess how evidence, context, and verification affect the result.
 - Compare architectural patterns and framework or protocol choices using their trade-offs, not their names.
 - Explain how coordination, permissions, and cost affect what a system can do reliably.
 - Read a case study critically: distinguish a design claim from what the project actually demonstrates.
 
-## Start reading
+## Read the book
 
 The manuscript files are in [the chapters folder](chapters/). Open [Front matter](chapters/00-frontmatter.md), [Preface](chapters/00-preface.md), [Introduction](chapters/00-introduction.md), or choose a chapter below.
-
-## Chapters
 
 ### Architecture and foundations
 
@@ -84,7 +80,7 @@ The manuscript files are in [the chapters folder](chapters/). Open [Front matter
 44. [Case: AI Financial Fragility Detector](chapters/44-case-financial-fragility.md)
 45. [Case: StudyMate AI](chapters/45-case-studymate.md)
 
-## Additional material
+## Resources
 
 The two additional essays below are kept outside the main numbered sequence. Chapter-specific author and editor credits are in the chapter files.
 
@@ -96,6 +92,6 @@ The two additional essays below are kept outside the main numbered sequence. Cha
 
 See [the license](LICENSE.md) for rights and reuse terms.
 
-## Medhavy
+### Medhavy
 
 The manuscript is also being prepared for use with [Medhavy](https://www.medhavy.com/).
