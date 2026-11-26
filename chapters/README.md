@@ -1,69 +1,66 @@
-# book-v1 — Design of Agentic Systems with Case Studies
+# Design of Agentic Systems with Case Studies: chapter guide
 
-Consolidated build of the drafts produced in this session. Each file contains the chapter draft + research notes + hero image brief, separated by a triple-rule divider and marked "DRAFTING MATERIALS — not for publication."
+[Return to the book overview](../README.md).
 
-Original source files (dated `2026-04-21-[slug].md`) remain intact under `../chapters/`, `../research/`, `../images/`.
+### Part I · Architecture foundations
 
-## Files in this folder
+1. [The Move That Changed Everything](../chapters/01-move-that-changed-everything.md): Use a concrete decision to introduce the costs and benefits of delegating action.
+2. [The Blueprint Before the Build](../chapters/02-blueprint-before-the-build.md): Describe a system’s workflow and responsibilities before choosing a tool.
+3. [Five Patterns, Five Trade-offs](../chapters/03-five-patterns-five-tradeoffs.md): Compare five design patterns by the trade-off each asks you to accept.
 
-| # | Slug | Author | Role in new 11-chapter structure | Has research notes | Has image brief |
-|---|---|---|---|---|---|
-| 01 | move-that-changed-everything | Nik Bear Brown | Ch. 1 opener vignette (AlphaGo / Move 37) | ✓ | ✓ |
-| 02 | blueprint-before-the-build | `[Student — TA to fill in]` | Ch. 2 sidebar material (BDI) | — | — |
-| 03 | five-patterns-five-tradeoffs | `[Student — TA to fill in]` | Ch. 5 sidebar material (reasoning patterns) | — | — |
-| 04 | rag-101 | Nik Bear Brown | Ch. 6 Grounding Foundations | ✓ | ✓ |
-| 05 | configuring-your-rag-pipeline | Nik Bear Brown | Ch. 7 Configuring Retrieval | ✓ | ✓ |
-| 06 | grounding-agents-in-evidence | Aravind Balaji | **System case: Magid** (paired with Ch. 6) | ✓ | ✓ |
-| 07 | hallucination-plausibility-vs-truth | Madhumitha Nandhikatti | **Pattern case: Hallucination** (Ch. 10) | — | — |
-| 08 | attack-surface-no-one-designed-for | Vatsal Sandeep Naik | **Pattern case: Attack Surface** (Ch. 10) | — | — |
-| 09 | five-ways-context-kills-agents | Junyi Zhang | **Pattern case: Context Collapse** (Ch. 10) | — | — |
-| 10 | coordinated-agents-emergence | `[Student — TA to fill in]` | **Pattern case: Cascade Failure** (Ch. 10) | — | — |
-| 11 | model-economics | `[Student A + B merged]` | **Pattern case: Cost Blowout** (Ch. 10) | — | — |
-| 12 | choosing-your-weapon | Rahul Manohar | **Pattern case: Framework Choice** (pending OQ-008 — ship as pattern case or absorb into Ch. 5 drift) | — | — |
-| 13 | protocol-layer | `[Student — TA to fill in]` | **Pattern case: Protocol Layer** (pending OQ-008 — ship as pattern case or absorb into Ch. 4 drift) | — | — |
-| 14 | twelve-production-builds | `[Student — TA to fill in]` | No clean home in new 11-chapter structure. Candidate for cut or Volume 2. | — | — |
+### Part II · Retrieval and reliability
 
-## What's NOT here (Nik must write for Spring 2026)
+4. [RAG 101](../chapters/04-rag-101.md): Explain when retrieval is needed to support a generated answer.
+5. [Choosing and Configuring Your RAG Pipeline](../chapters/05-configuring-your-rag-pipeline.md): Choose retrieval components based on the task and evidence requirements.
+6. [Grounding Agents in Evidence](../chapters/06-grounding-agents-in-evidence.md): Require attributable evidence at the points where an agent makes claims.
+7. [Hallucination: When Plausibility Beats Truth](../chapters/07-hallucination-plausibility-vs-truth.md): Tell convincing language from verified evidence and plan a separate check.
+8. [The Attack Surface No One Designed For](../chapters/08-attack-surface-no-one-designed-for.md): Identify where an agent’s trust boundaries introduce defensive review needs.
+9. [Five Ways Context Kills Agents](../chapters/09-five-ways-context-kills-agents.md): Diagnose failure modes when context becomes incomplete or misleading.
 
-### Front matter
-- 00-frontmatter (title page, copyright, edition info)
-- Preface — contested claims, coverage gaps, living-document model
-- Acknowledgments (cohort credits)
-- About the editor and contributors
-- How to read this book (three-layer structure)
+### Part III · Coordination, economics and tools
 
-### Theory spine chapters not yet drafted
-- Ch. 1 — The Problem Agentic Systems Solve (file 01 is the opener vignette; the rest of the chapter isn't drafted)
-- Ch. 2 — Agent Basics: The Core Loop and BDI (file 02 is sidebar material only)
-- Ch. 3 — Memory and Context
-- Ch. 4 — Tool Use
-- Ch. 5 — Orchestration (file 03 is sidebar material only)
-- Ch. 8 — Meta-Reasoning
-- Ch. 9 — Trade-offs and Design Decisions (⚠ risk chapter, draft last)
-- Ch. 10 — Failure Modes (the five pattern cases are drafted; the theory-chapter framing that indexes them isn't)
-- Ch. 11 — When Not to Go Agentic
+10. [When Coordinated Agents Become Unpredictable](../chapters/10-coordinated-agents-emergence.md): Trace how local coordination decisions can produce system-level surprises.
+11. [Model Economics and the Build-or-Buy Decision](../chapters/11-model-economics.md): Use evidence on cost, latency and volume to compare building and buying.
+12. [Choosing Your Weapon](../chapters/12-choosing-your-weapon.md): Choose a framework based on its limits and the work it must do.
+13. [The Protocol Layer: MCP, ACP, and the Interoperability Standard](../chapters/13-protocol-layer.md): Explain what interoperability protocols standardize and leave to application design.
+14. [Twelve Production Builds: A Scaffolded Project Sequence](../chapters/14-twelve-production-builds.md): Connect learning objectives to a scaffolded sequence of implementation projects.
 
-### System cases not yet drafted (in this session)
-- Quandri's Insurance Processing Network
-- My AskAI's Customer Support Architecture
-- Oracle Health's Clinical Documentation Agent
-- Enterprise Bot's Sales Network
-- Six Atomic's Meta-Reasoning System
-- Stripe Documentation Model
+### Part IV · Verification, public and professional workflows
 
-*(Bear has indicated drafts may exist elsewhere from earlier student work — verify before summer planning.)*
+15. [Case: CodeSentinel](../chapters/15-case-codesentinel.md): Compare static security findings with the code evidence a human reviewer needs.
+16. [Case: VerifAI](../chapters/16-case-verifai.md): Diagnose unsupported legal citations and design a review before reuse.
+17. [Case: PharmGuard AI](../chapters/17-case-pharmguard.md): Analyze medication-safety information flow and the need for expert review.
+18. [Case: BioClaim Guard](../chapters/18-case-bioclaim-guard.md): Check whether a consumer biomedical claim is actually supported by its study.
+19. [Case: ClearDischarge](../chapters/19-case-cleardischarge.md): Inspect how a rewrite can preserve meaning and uncertainty in a discharge document.
+20. [Case: AIRA](../chapters/20-case-aira.md): Separate tool evidence from a university judgment about academic integrity.
+21. [Case: CrisisLens](../chapters/21-case-crisislens.md): Evaluate a proposed support workflow and the boundary for a human counselor.
+22. [Case: TrialMatch AI](../chapters/22-case-trialmatch.md): Trace complicated eligibility criteria to source evidence instead of treating a match as a medical recommendation.
+23. [Case: PolicyLens](../chapters/23-case-policylens.md): Compare summaries against policy wording and identify unsupported additions.
+24. [Case: PlanLens](../chapters/24-case-planlens.md): Evaluate which plan claims need documentation and which decisions stay outside the assistant.
 
-### Back matter
-- Glossary
-- Pattern index
-- Domain index
-- Contributor biographies (full)
-- Further reading (consolidated)
-- Citation guidance
+### Part V · Analysis, infrastructure and validation
 
-## Notes on the consolidated files
+25. [Case: TacticalLens](../chapters/25-case-tacticallens.md): Trace gaps and uneven coverage in soccer event analysis.
+26. [Case: Pitch Verdict](../chapters/26-case-pitch-verdict.md): Test whether a match report’s claims are backed by observed events.
+27. [Case: Pygmy](../chapters/27-case-pygmy.md): Compare stages of a data-engineering workflow where failures can go unnoticed.
+28. [Case: Jobzilla AI](../chapters/28-case-jobzilla.md): Check evidence and human ownership when tailoring application material.
+29. [Case: CostSherlock](../chapters/29-case-costsherlock.md): Distinguish an observed cloud-cost increase from a verified cause.
+30. [Case: LitmusQE](../chapters/30-case-litmusqe.md): Evaluate generated software tests for gaps and missed edge cases.
+31. [Case: SchemaGuard](../chapters/31-case-schemaguard.md): Separate valid JSON structure from valid domain relationships.
+32. [Case: CLIS V2](../chapters/32-case-clis-v2.md): Evaluate source appraisal and human oversight in a clinical literature workflow.
+33. [Case: CloudArch Designer](../chapters/33-case-cloudarch.md): Translate cloud constraints into reviewable design choices.
+34. [Case: Personal Cybersecurity Guardian](../chapters/34-case-cybersecurity-guardian.md): Evaluate a defensive personal-security workflow and the limits of automated advice.
 
-- Each file's chapter content is the draft **as it stood at end of this session**. Students who want to publish continue revising over the summer.
-- The "DRAFTING MATERIALS" section below the triple-rule divider is working material for editorial review — research notes, image briefs, compression decisions, source citations. Strip this section before edition assembly.
-- Files 01, 04, 05, 06 have full materials (research notes + image brief). Files 02, 03, 07–14 have the chapter draft only — those were drafted before the research-notes convention was applied, or in a workflow that did not produce them.
-- The `/vet` skill runs against these consolidated files (or against the original chapter files in `../chapters/`) to produce a triage verdict before publication.
+### Part VI · Learning, research and personal workflows
+
+35. [Case: Syllabus Navigator](../chapters/35-case-syllabus-navigator.md): Detect inconsistent dates and policies before trusting an extracted syllabus.
+36. [Case: Adaptive Linear Algebra Explainer (Faraz)](../chapters/36-case-adaptive-linalg-faraz.md): Adapt an eigenvector explanation to the learner’s prior understanding.
+37. [Case: Adaptive Linear Algebra Explainer (Abdul)](../chapters/37-case-adaptive-linalg-abdul.md): Compare a second adaptive linear algebra design against different reader needs.
+38. [Case: AI-Powered Stock Research Platform](../chapters/38-case-stock-research.md): Trace an equity-research claim to filings or other attributable evidence.
+39. [Case: Immigrant Tax Filing Assistant](../chapters/39-case-immigrant-tax.md): Determine when a tax workflow needs clarification or a qualified human.
+40. [Case: MindMirror](../chapters/40-case-mindmirror.md): Identify privacy and handoff constraints in a reflective journaling design.
+41. [Case: Research Claim Auditor](../chapters/41-case-research-claim-auditor.md): Distinguish a topically related citation from evidence for the exact research claim.
+42. [Case: WCAG Compliance Auditor](../chapters/42-case-wcag-auditor.md): Separate automated access checks from what a manual accessibility audit needs to establish.
+43. [Case: Thought2Do](../chapters/43-case-thought2do.md): Turn a captured thought into a reviewable task with an explicit due date.
+44. [Case: AI Financial Fragility Detector](../chapters/44-case-financial-fragility.md): Examine uncertainty and asymmetric errors in financial fragility monitoring.
+45. [Case: StudyMate AI](../chapters/45-case-studymate.md): Require traceable study material and test whether a learning aid preserves its source.
